@@ -237,6 +237,7 @@ public class ActorSDK {
                 AANavigationController(rootViewController: AASettingsViewController())]
             tab.selectedIndex = 0
             tab.selectedIndex = 1
+            tab.selectedIndex = 2
             
             if (AADevice.isiPad) {
                 let splitController = AARootSplitViewController()
@@ -300,6 +301,7 @@ public class ActorSDK {
                     AANavigationController(rootViewController: AASettingsViewController())]
                 tab.selectedIndex = 0
                 tab.selectedIndex = 1
+                tab.selectedIndex = 2
                 
                 if (AADevice.isiPad) {
                     let splitController = AARootSplitViewController()
