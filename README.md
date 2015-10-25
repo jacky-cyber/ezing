@@ -1,0 +1,2 @@
+# ezing
+http://ezing.cn
