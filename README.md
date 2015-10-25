@@ -1,2 +1,2 @@
 # ezing
-http://ezing.cn
+https://www.ezing.cn/app/index.html
