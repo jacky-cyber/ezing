@@ -40,6 +40,19 @@ public class HomeViewController: AAViewController,UITableViewDelegate ,UITableVi
         self.tableView!.rowHeight = 66
         
         self.view?.addSubview(self.tableView!)
+        
+        let cache = Cache<JSON>(name: "bots_latest")
+        let URL = NSURL(string: "https://app.ezing.cn/bots/bots/")!
+        var error:NSError?
+        let isReachable = URL.checkResourceIsReachableAndReturnError(&error)
+        if(isReachable){
+            cache.removeAll()
+        }
+        cache.fetch(URL: URL).onSuccess { JSON in
+            self.bots = JSON.dictionary?["bots"] as? NSArray;
+            self.tableView?.reloadData()
+        }
+        
     }
     
     public override func viewWillAppear(animated: Bool) {
@@ -83,5 +96,33 @@ public class HomeViewController: AAViewController,UITableViewDelegate ,UITableVi
         return cell
     }
     
-    
+    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let bot = self.bots?[indexPath.row] as! NSDictionary;
+        
+        let nickname = bot["nickname"] as! NSString as String
+        
+        self.executeSafeOnlySuccess(Actor.findUsersCommandWithQuery(nickname), successBlock: { (val) -> Void in
+            var user: ACUserVM? = nil
+            if let users = val as? IOSObjectArray {
+                if Int(users.length()) > 0 {
+                    if let tempUser = users.objectAtIndex(0) as? ACUserVM {
+                        user = tempUser
+                    }
+                }
+            }
+            
+            if user != nil {
+                self.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> Void in
+                    self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                    self.dismiss()
+                    }, failureBlock: { (val) -> Void in
+                        self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                        self.dismiss()
+                })
+            } else {
+                self.alertUser("FindNotFound")
+            }
+        })
+
+    }
 }

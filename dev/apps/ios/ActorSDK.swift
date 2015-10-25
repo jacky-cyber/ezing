@@ -40,8 +40,8 @@ public class ActorSDK {
 
     /// Server Endpoints
     public var endpoints = [
-        "tls://front1-mtproto-api-rev2.actor.im",
-        "tls://front2-mtproto-api-rev2.actor.im"
+        "tls://actor.ezing.cn",
+        "tls://actor.ezingsoft.com"
     ]
     
     /// API ID
