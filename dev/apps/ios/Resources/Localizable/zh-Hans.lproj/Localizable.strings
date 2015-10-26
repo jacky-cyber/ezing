@@ -358,9 +358,9 @@
 
 "AuthCodeFieldHint" = "验证码";
 
-"AuthCodeHint" = "已经通过短信为你发送验证码，请稍侯。";
+"AuthCodeHint" = "已经通过短信为你发送验证码，请稍侯";
 
-"AuthCallHint" = "{time}秒后将拨打手机告知验证码";
+"AuthCallHint" = "{time}秒后拨打手机告知验证码";
 
 "AuthCallDoneHint" = "已经给您拨打电话.";
 
