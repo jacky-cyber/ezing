@@ -46,23 +46,39 @@
 
 "SettingsChangeName" = "修改名字";
 
-"SettingsAboutNotSet" = "";
 
-"SettingsUsernameNotSet" = "";
+"SettingsEditHeader" = "名字";
 
-"SettingsUsernameTitle" = "设置昵称(英文字母＋数字)";
+"SettingsEditHint" = "请输入你的真实名字，以方便朋友们了解你是谁";
+
+"SettingsEditFieldHint" = "请输入名字";
+
+
+"SettingsAboutNotSet" = "设置个性签名";
+
+"SettingsUsernameNotSet" = "设置昵称";
+
+"SettingsUsernameTitle" = "昵称";
+
+"SettingsUsernameHintField" = "请输入昵称";
+
+"SettingsUsernameHint" = "设置昵称后，其他人可以通过昵称找到你。\n\n昵称可以由a-z、0-9及下划线组成，最少5个字.";
 
 "SettingsChangeAboutTitle" = "个性签名";
 
-"SettingsSecurity" = "隐私和安全";
+"SettingsChangeAboutHint" = "请输入个性签名";
 
-"SettingsEditHeader" = "修改名字";
+"SettingsSecurity" = "安全";
+
+"SettingsWallpapers" = "聊天背景";
 
 "SettingsNotifications" = "通知和声音";
 
 "SettingsAskQuestion" = "提问";
 
-"SettingsAbout" = "关于";
+"SettingsTwitter" = "微博";
+
+"SettingsAbout" = "应用主页";
 
 "SettingsVersion" = "版本 {version}";
 
@@ -84,17 +100,19 @@
 
 "ProfileRemoveFromContacts" = "从通讯录中删除";
 
-"ProfileRename" = "设置备注名";
+"ProfileRename" = "修改联系名";
 
-"ProfileRenameMessage" = "你可以修改通讯录中的备注名，此修改只体现在你的通讯录中。";
+"ProfileRenameMessage" = "你可以修改通讯录中的联系人名称，此修改只体现在你的通讯录中。";
 
-"ProfileRenameAction" = "设置备注名";
+"ProfileRenameAction" = "改名";
 
 "ProfileAbout" = "个性签名";
 
 "ProfilePhone" = "手机";
 
 "ProfileUsername" = "昵称";
+
+"ProfileTitle" = "详细资料";
 
 "CallNumber" = "拨打这个电话";
 
@@ -106,13 +124,15 @@
  * Publics
  */
 
-"JoinAlertMessage" = "要加入这个群组吗？";
+"JoinAlertMessage" = "你要加入这个群吗？";
 
 /*
  * Group
  */
 
-"GroupEditHeader" = "修改群组名称";
+"GroupEditHeader" = "主题";
+
+"GroupEditHint" = "输入群组主题";
 
 "GroupSetPhoto" = "设置群组头像";
 
@@ -130,7 +150,15 @@
 
 "GroupMembers" = "{0} 个成员";
 
+"GroupMemberAdmin" = "管理员";
+
 "GroupMemberInfo" = "成员信息";
+
+"GroupMemberMakeAdmin" = "设为管理员";
+
+"GroupMemberMakeMessage" = "确认要设{name}为这个群组的管理员吗?";
+
+"GroupMemberMakeAction" = "是";
 
 "GroupMemberKick" = "移出群组";
 
@@ -144,7 +172,7 @@
 
 "GroupMemberCallNoPhones" = "此用户没有电话号码。";
 
-"GroupAddParticipant" = "添加成员...";
+"GroupAddParticipant" = "添加参与者...";
 
 "GroupAddParticipantTitle" = "通讯录";
 
@@ -162,7 +190,7 @@
 
 "GroupInviteLinkHint" = "发送邀请链接即可邀请你的朋友加入此群组。";
 
-"GroupInviteLinkRevokeMessage" = "确定要重置这个链接，废除后其他人将无法使用这个链接加入群组。";
+"GroupInviteLinkRevokeMessage" = "确定要重置这个链接吗？重置后其他人将无法使用这个链接加入群组。";
 
 "GroupInviteLinkRevokeAction" = "重置";
 
@@ -176,11 +204,13 @@
 
 "GroupIntegrationLinkRevokeMessage" = "确定要废除这个链接，废除后其他系统将无法使用这个链接发送消息。";
 
-"GroupIntegrationLinkRevokeAction" = "重置";
+"GroupIntegrationLinkRevokeAction" = "废除";
 
 "GroupJoinMessage" = "确定要加入群组吗?";
 
 "GroupJoinAction" = "加入";
+
+"GroupMembers" = "成员";
 
 /*
  * Compose
@@ -192,11 +222,11 @@
 
 "CreateGroupTitle" = "创建群组";
 
-"CreateGroupNamePlaceholder" = "群组名称";
+"CreateGroupNamePlaceholder" = "输入群组名称";
 
 "CreateGroupHint" = "请设置群组名称和头像";
 
-"CreateGroupMembersTitle" = "邀请成员";
+"CreateGroupMembersTitle" = "邀请";
 
 "CreateGroupMembersPlaceholders" = "输入名字";
 
@@ -240,11 +270,23 @@
  * Privacy
  */
 
-"PrivacyTitle" = "隐私和安全";
+"SecurityTitle" = "安全";
 
 "PrivacyTerminate" = "终止所有会话";
 
+"PrivacyTerminateAlert" = "终止所有会话";
+
+"PrivacyTerminateAlertSingle" = "终止会话";
+
 "PrivacyTerminateHint" = "退出除此设备之外的所有设备。";
+
+/*
+ * Wallpapers
+ */
+
+"WallpapersTitle" = "聊天背景";
+
+"WallpapersPhoto" = "相册";
 
 /*
  * Chat
@@ -256,7 +298,17 @@
 
 "ChatNoGroupAccess" = "你不是群组成员";
 
-"NewMessage" = "新消息";
+/*
+ * Find
+ */
+
+"FindTitle" = "查找";
+
+"FindFieldHint" = "电话号码、昵称、或者邮件";
+
+"FindHint" = "请输入电话号码、昵称、或者邮件，然后点［查找］";
+
+"FindNotFound" = "抱歉，没有找到";
 
 /*
  * Placeholders
@@ -264,7 +316,7 @@
 
 "Placeholder_Empty_Title" = "邀请你的朋友";
 
-"Placeholder_Empty_Message" = "你的通讯录中没有人使用易致，请点击下面按钮邀请他们。";
+"Placeholder_Empty_Message" = "你的通讯录中没有人使用，请点击下面按钮邀请他们。";
 
 "Placeholder_Empty_Action" = "告诉你的朋友";
 
@@ -278,7 +330,7 @@
 
 "Placeholder_Contacts_Title" = "邀请好友";
 
-"Placeholder_Contacts_Message" = "你的通讯录中没有人使用易致，请点击下面按钮邀请他们。";
+"Placeholder_Contacts_Message" = "你的通讯录中没有人使用，请点击下面按钮邀请他们。";
 
 "Placeholder_Contacts_Action" = "告诉好友";
 
@@ -290,7 +342,7 @@
 
 "Placeholder_Group_Title" = "不是一个群组成员";
 
-"Placeholder_Group_Message" = "非常抱歉，您不是群组成员。";
+"Placeholder_Group_Message" = "非常不幸，您不是群组成员。";
 
 /*
  * Auth
@@ -308,6 +360,12 @@
 
 "AuthCodeHint" = "已经通过短信为你发送验证码，请稍侯。";
 
+"AuthCallHint" = "{time}秒后将打电话给您通知验证码";
+
+"AuthCallDoneHint" = "已经给您拨打电话.";
+
+"AuthNoCodeHint" = "无法获取验证码?";
+
 "AuthProfileTitle" = "你的信息";
 
 "AuthProfileAddPhoto1" = "添加";
@@ -316,7 +374,7 @@
 
 "AuthProfileNameHint" = "你的名字";
 
-"AuthProfileHint" = "请输入名字并上传头像";
+"AuthProfileHint" = "请输入你的名字并上传头像";
 
 /*
  * Common Elements
@@ -324,11 +382,11 @@
 
 "CurrentLocale" = "Cn";
 
-"InviteText" = "安全即时通讯－易致：https://app.ezing.cn";
+"InviteText" = "我在使用安全快捷的即时通讯工具－易致，下载地址 {link}";
 
 "PhotoRemove" = "删除头像";
 
-"PhotoRemoveGroupMessage" = "确定要删除群组头像吗？删除后群组成员会很失望哦。";
+"PhotoRemoveGroupMessage" = "确定要删除群头像吗？删除后很多群成员会很失望哦。";
 
 "PhotoCamera" = "拍照";
 
@@ -348,17 +406,27 @@
 
 "NavigationSave" = "保存";
 
+"NavigationFind" = "查找";
+
 "AlertCancel" = "取消";
 
 "AlertNext" = "下一步";
 
 "AlertSave" = "保存";
 
+"AlertSet" = "设置";
+
 "AlertOk" = "确定";
 
 "AlertYes" = "是";
 
 "AlertNo" = "否";
+
+"AlertError" = "错误";
+
+"AlertTryAgain" = "重试";
+
+"AlertInvite" = "邀请";
 
 "UnsupportedContent" = "这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。";
 
@@ -370,6 +438,10 @@
 
 "AlertLinkCopied" = "链接已经被复制到剪贴板。";
 
+"StatusConnecting" = "连接中...";
+
+"StatusSyncing" = "同步中...";
+
 /*
  * Errors
  */
@@ -380,10 +452,7 @@
 
 "ErrorAlreadyJoined" = "你已经是群组成员";
 
-"ErrorUnableToJoin" = "无法加入群组";
-
-/*
- */
+"ErrorUnableToJoin" = "撤销输入";
 
 "Undo Typing" = "撤销输入";
 
