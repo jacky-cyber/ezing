@@ -20,7 +20,7 @@
 
 "ContactsAddHeader" = "添加联系人";
 
-"ContactsAddHint" = "请输入电话号码";
+"ContactsAddHint" = "请输入手机号码";
 
 "ContactsActionInvite" = "邀请";
 
@@ -114,11 +114,11 @@
 
 "ProfileTitle" = "详细资料";
 
-"CallNumber" = "拨打这个电话";
+"CallNumber" = "拨打这个手机";
 
-"CopyNumber" = "复制电话号码";
+"CopyNumber" = "复制手机号码";
 
-"NumberCopied" = "电话号码已经复制到剪贴板中";
+"NumberCopied" = "手机号码已经复制到剪贴板中";
 
 /*
  * Publics
@@ -170,7 +170,7 @@
 
 "GroupMemberCall" = "打电话";
 
-"GroupMemberCallNoPhones" = "此用户没有电话号码。";
+"GroupMemberCallNoPhones" = "此用户没有手机号码。";
 
 "GroupAddParticipant" = "添加参与者...";
 
@@ -304,9 +304,9 @@
 
 "FindTitle" = "查找";
 
-"FindFieldHint" = "电话号码、昵称、或者邮件";
+"FindFieldHint" = "手机号码、昵称、或者邮件";
 
-"FindHint" = "请输入电话号码、昵称、或者邮件，然后点［查找］";
+"FindHint" = "请输入手机号码、昵称、或者邮件，然后点［查找］";
 
 "FindNotFound" = "抱歉，没有找到";
 
@@ -360,7 +360,7 @@
 
 "AuthCodeHint" = "已经通过短信为你发送验证码，请稍侯。";
 
-"AuthCallHint" = "{time}秒后将打电话给您通知验证码";
+"AuthCallHint" = "{time}秒后将拨打手机告知验证码";
 
 "AuthCallDoneHint" = "已经给您拨打电话.";
 
