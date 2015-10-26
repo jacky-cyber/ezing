@@ -70,7 +70,7 @@
 
 "SettingsSecurity" = "安全";
 
-"SettingsWallpapers" = "聊天背景";
+"SettingsWallpapers" = "墙纸";
 
 "SettingsNotifications" = "通知和声音";
 
@@ -78,7 +78,7 @@
 
 "SettingsTwitter" = "微博";
 
-"SettingsAbout" = "应用主页";
+"SettingsAbout" = "主页";
 
 "SettingsVersion" = "版本 {version}";
 
@@ -284,7 +284,7 @@
  * Wallpapers
  */
 
-"WallpapersTitle" = "聊天背景";
+"WallpapersTitle" = "墙纸";
 
 "WallpapersPhoto" = "相册";
 
