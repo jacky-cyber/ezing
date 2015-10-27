@@ -452,7 +452,7 @@
 
 "ErrorAlreadyJoined" = "你已经是群组成员";
 
-"ErrorUnableToJoin" = "撤销输入";
+"ErrorUnableToJoin" = "无法加入群组";
 
 "Undo Typing" = "撤销输入";
 
