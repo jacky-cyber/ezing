@@ -41,7 +41,7 @@ public class I18nEngine {
 
     private static final String TAG = "I18nEngine";
 
-    private static final String[] SUPPORTED_LOCALES = new String[]{"Ru", "Ar", "Cn", "Pt", "Zh"};
+    private static final String[] SUPPORTED_LOCALES = new String[]{"Ru", "Ar", "Cn", "Pt","Zh-Hans"};
 
     private final Modules modules;
     private final LocaleRuntime runtime;
@@ -145,7 +145,7 @@ public class I18nEngine {
             Date date1 = new Date(date);
             int month = date1.getMonth();
             int d = date1.getDate();
-            return d + " " + MONTHS_SHORT[month].toUpperCase();
+            return runtime.formatDate(date);//d + " " + MONTHS_SHORT[month].toUpperCase();
         }
     }
 
