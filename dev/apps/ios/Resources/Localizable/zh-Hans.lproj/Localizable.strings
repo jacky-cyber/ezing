@@ -264,7 +264,7 @@
 
 "NotificationsOnlyMentions" = "仅当被提到时";
 
-"NotificationsOnlyMentionsHint" = "只有当消息中提到你时才通知";
+"NotificationsOnlyMentionsHint" = "只有当消息中提到你时才通知。";
 
 /*
  * Privacy
