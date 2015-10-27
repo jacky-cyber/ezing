@@ -38,27 +38,47 @@
 
 "SettingsEdit" = "Edit";
 
+
 "SettingsSetPhoto" = "Set Profile Photo";
 
 "SettingsChangeName" = "Change Your Name";
 
-"SettingsAboutNotSet" = "Set about me";
+
+"SettingsEditHeader" = "Your name";
+
+"SettingsEditHint" = "Please, enter your real name to help people better understand who you are.";
+
+"SettingsEditFieldHint" = "Enter your name";
+
 
 "SettingsUsernameNotSet" = "Set username";
 
-"SettingsUsernameTitle" = "Change your username";
+"SettingsUsernameTitle" = "Username";
+
+"SettingsUsernameHintField" = "Enter your Username";
+
+"SettingsUsernameHint" = "You can choose a username in eZing. If you do, other people will be able to find you by this username and contact you without sharing your phone number.\n\nYou can use a-z, 0-9 and underscores. Minumum length is 5 characters.";
+
+
+"SettingsAboutNotSet" = "Set about me";
 
 "SettingsChangeAboutTitle" = "About me";
 
-"SettingsSecurity" = "Privacy and Security";
+"SettingsChangeAboutHint" = "Tell people anything you want about yourself";
 
-"SettingsEditHeader" = "Change your name";
+
+"SettingsSecurity" = "Security";
+
+"SettingsWallpapers" = "Wallpapers";
+
 
 "SettingsNotifications" = "Notifications and Sounds";
 
 "SettingsAskQuestion" = "Ask Question";
 
-"SettingsAbout" = "About";
+"SettingsTwitter" = "App Twitter";
+
+"SettingsAbout" = "App Homepage";
 
 "SettingsVersion" = "Version {version}";
 
@@ -92,6 +112,8 @@
 
 "ProfileUsername" = "username";
 
+"ProfileTitle" = "Info";
+
 "CallNumber" = "Call Number";
 
 "CopyNumber" = "Copy Number";
@@ -108,7 +130,9 @@
  * Group
  */
 
-"GroupEditHeader" = "Change group theme";
+"GroupEditHeader" = "Theme";
+
+"GroupEditHint" = "Enter group theme";
 
 "GroupSetPhoto" = "Set Group Photo";
 
@@ -126,7 +150,15 @@
 
 "GroupMembers" = "{0} MEMBERS";
 
+"GroupMemberAdmin" = "admin";
+
 "GroupMemberInfo" = "Profile";
+
+"GroupMemberMakeAdmin" = "Make Group admin";
+
+"GroupMemberMakeMessage" = "Are you sure want to make {name} admin of this group?";
+
+"GroupMemberMakeAction" = "Yes";
 
 "GroupMemberKick" = "Kick from Group";
 
@@ -177,6 +209,8 @@
 "GroupJoinMessage" = "Are you sure want to join group?";
 
 "GroupJoinAction" = "Join";
+
+"GroupMembers" = "MEMBERS";
 
 /*
  * Compose
@@ -236,11 +270,23 @@
  * Privacy
  */
 
-"PrivacyTitle" = "Privacy and Security";
+"SecurityTitle" = "Security";
 
 "PrivacyTerminate" = "Terminate all other sessions";
 
+"PrivacyTerminateAlert" = "Terminate all sessions";
+
+"PrivacyTerminateAlertSingle" = "Terminate session";
+
 "PrivacyTerminateHint" = "Logs out all devices except for this one.";
+
+/*
+ * Wallpapers
+ */
+
+"WallpapersTitle" = "Wallpapers";
+
+"WallpapersPhoto" = "Photo Library";
 
 /*
  * Chat
@@ -251,6 +297,18 @@
 "ChatSend" = "Send";
 
 "ChatNoGroupAccess" = "You is not member";
+
+/*
+ * Find
+ */
+
+"FindTitle" = "Find People";
+
+"FindFieldHint" = "phone number, email or nickname";
+
+"FindHint" = "Enter phone number, email or nickname and press search";
+
+"FindNotFound" = "Sorry, but we are unable to find person for this search query";
 
 /*
  * Placeholders
@@ -302,6 +360,12 @@
 
 "AuthCodeHint" = "We have sent you an SMS with the code.";
 
+"AuthCallHint" = "eZing will call you in {time}";
+
+"AuthCallDoneHint" = "eZing dialed your number.";
+
+"AuthNoCodeHint" = "Doesn't get the code?";
+
 "AuthProfileTitle" = "Your Info";
 
 "AuthProfileAddPhoto1" = "add";
@@ -318,7 +382,7 @@
 
 "CurrentLocale" = "En";
 
-"InviteText" = "Hi! Let's switch to eZing! https://app.ezing.cn";
+"InviteText" = "Hi! Let's switch to eZing! {link}";
 
 "PhotoRemove" = "Delete Photo";
 
@@ -342,17 +406,27 @@
 
 "NavigationSave" = "Save";
 
+"NavigationFind" = "Find";
+
 "AlertCancel" = "Cancel";
 
 "AlertNext" = "Next";
 
 "AlertSave" = "Save";
 
+"AlertSet" = "Set";
+
 "AlertOk" = "OK";
 
 "AlertYes" = "Yes";
 
 "AlertNo" = "No";
+
+"AlertError" = "Error";
+
+"AlertTryAgain" = "Try Again";
+
+"AlertInvite" = "Invite";
 
 "UnsupportedContent" = "Message is unsupported in this version. Please, wait for application update to see message.";
 
@@ -363,6 +437,10 @@
 "ActionShareLink" = "Share Link";
 
 "AlertLinkCopied" = "Link copied to clipboard.";
+
+"StatusConnecting" = "Connecting...";
+
+"StatusSyncing" = "Syncing...";
 
 /*
  * Errors
@@ -375,3 +453,17 @@
 "ErrorAlreadyJoined" = "You are already member of group";
 
 "ErrorUnableToJoin" = "Unable to join to group";
+
+/*
+ *
+ */
+
+"Undo Typing" = "Undo Typing";
+
+"Undo" = "Undo";
+
+"Redo" = "Redo";
+
+"Cancel" = "Cancel";
+
+"NewMessages" = "New Messages"
