@@ -453,3 +453,15 @@
 "ErrorAlreadyJoined" = "You are already member of group";
 
 "ErrorUnableToJoin" = "Unable to join to group";
+
+/*
+ *
+ */
+
+"Undo Typing" = "Undo Typing";
+
+"Undo" = "Undo";
+
+"Redo" = "Redo";
+
+"Cancel" = "Cancel";

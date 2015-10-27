@@ -382,7 +382,7 @@
 
 "CurrentLocale" = "Cn";
 
-"InviteText" = "我在使用安全快捷的即时通讯工具－易致，下载地址 {link}";
+"InviteText" = "安全快捷的即时通讯工具－易致，下载地址 {link}";
 
 "PhotoRemove" = "删除头像";
 
@@ -454,8 +454,14 @@
 
 "ErrorUnableToJoin" = "无法加入群组";
 
+/*
+ *
+ */
+
 "Undo Typing" = "撤销输入";
 
 "Undo" = "撤销";
+
+"Redo" = "重做";
 
 "Cancel" = "取消";
