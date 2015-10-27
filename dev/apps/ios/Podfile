@@ -1,0 +1,43 @@
+platform :ios, '7.0'
+workspace 'ActorApp'
+xcodeproj 'ActorApp.xcodeproj'
+
+target 'ActorApp' do
+	xcodeproj 'ActorApp.xcodeproj'
+
+	# Model
+	pod 'j2objc-local', :git => 'https://github.com/actorapp/j2objc-local', :tag => 'v0.9.7'
+	pod 'RegexKitLite', :inhibit_warnings => true
+	pod 'CocoaAsyncSocket'
+	pod 'FMDB'
+
+	# UI
+	pod 'VENTokenField'
+	pod 'AsyncDisplayKit'
+	pod 'SVProgressHUD'
+	pod 'MBProgressHUD'
+	pod 'PSTAlertController'
+	pod 'PHFComposeBarView'
+	pod 'DZNPhotoPickerController'
+	pod 'HockeySDK'
+	pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
+    pod 'JVFloatLabeledTextField'
+    pod 'CLTokenInputView'
+    
+    pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
+    #pod 'SlackTextViewController'
+    
+    pod 'NYTPhotoViewer'
+    pod 'PEPhotoCropEditor'
+    pod 'TWMessageBarManager'
+    pod 'LTNavigationBar'
+    pod 'BlockAlertsAnd-ActionSheets'
+    pod 'RMUniversalAlert'
+    pod 'PSTAlertController'
+    pod 'TTTAttributedLabel'
+    pod 'M13ProgressSuite'
+    
+    # Tracking
+    pod 'SplunkMint-iOS'
+    pod 'Mixpanel'
+end
