@@ -4,7 +4,6 @@
 
 import Foundation
 import JDStatusBarNotification
-import Haneke
 
 public class ActorSDK {
 
@@ -51,28 +50,28 @@ public class ActorSDK {
     public var apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"
     
     /// Push registration mode
-    public var autoPushMode = AAAutoPush.None
+    public var autoPushMode = AAAutoPush.FromStart
     
     /// Push token registration id. Required for sending push tokens
-    public var apiPushId: Int? = nil
+    public var apiPushId: Int? = 1
     
     /// Invitation URL for apps
-    public var inviteUrl: String = "https://actor.im/dl"
+    public var inviteUrl: String = "https://app.ezing.cn"
     
     /// Support email
-    public var supportEmail: String? = nil
+    public var supportEmail: String? = "support@ezingsoft.com"
     
     /// Support email
-    public var supportActivationEmail: String? = nil
+    public var supportActivationEmail: String? = "support@ezingsoft.com"
     
     /// Support account
     public var supportAccount: String? = nil
     
     /// Support home page
-    public var supportHomepage: String? = "https://actor.im"
+    public var supportHomepage: String? = "https://app.ezing.cn"
 
     /// Support account
-    public var supportTwitter: String? = "actorapp"
+    public var supportTwitter: String? = nil
 
     /// Invite url scheme
     public var inviteUrlScheme: String? = nil
@@ -123,7 +122,6 @@ public class ActorSDK {
         if isStarted {
             return
         }
-                
         isStarted = true
         
         AAActorRuntime.configureRuntime()
@@ -232,12 +230,12 @@ public class ActorSDK {
             let tab = AARootTabViewController()
             tab.viewControllers = [
                 AANavigationController(rootViewController: HomeViewController()),
-                AANavigationController(rootViewController: AAContactsViewController()),
                 AANavigationController(rootViewController: AARecentViewController()),
+                AANavigationController(rootViewController: AAContactsViewController()),
                 AANavigationController(rootViewController: AASettingsViewController())]
             tab.selectedIndex = 0
-            tab.selectedIndex = 1
             tab.selectedIndex = 2
+            tab.selectedIndex = 1
             
             if (AADevice.isiPad) {
                 let splitController = AARootSplitViewController()
@@ -296,12 +294,12 @@ public class ActorSDK {
                 let tab = AARootTabViewController()
                 tab.viewControllers = [
                     AANavigationController(rootViewController: HomeViewController()),
-                    AANavigationController(rootViewController: AAContactsViewController()),
                     AANavigationController(rootViewController: AARecentViewController()),
+                    AANavigationController(rootViewController: AAContactsViewController()),
                     AANavigationController(rootViewController: AASettingsViewController())]
                 tab.selectedIndex = 0
-                tab.selectedIndex = 1
                 tab.selectedIndex = 2
+                tab.selectedIndex = 1
                 
                 if (AADevice.isiPad) {
                     let splitController = AARootSplitViewController()
