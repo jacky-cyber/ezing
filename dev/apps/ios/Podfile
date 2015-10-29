@@ -1,43 +1,82 @@
-platform :ios, '7.0'
-workspace 'ActorApp'
+platform :ios, '8.0'
+use_frameworks!
+
+workspace 'ActorSDK'
+xcodeproj 'ActorSDK.xcodeproj'
 xcodeproj 'ActorApp.xcodeproj'
 
+inhibit_all_warnings!
+
+link_with 'ActorApp'
+
 target 'ActorApp' do
-	xcodeproj 'ActorApp.xcodeproj'
+    xcodeproj 'ActorApp.xcodeproj'
 
-	# Model
-	pod 'j2objc-local', :git => 'https://github.com/actorapp/j2objc-local', :tag => 'v0.9.7'
-	pod 'RegexKitLite', :inhibit_warnings => true
-	pod 'CocoaAsyncSocket'
-	pod 'FMDB'
+    # Tracking
+    pod 'HockeySDK', '~> 3.8-RC'
+    pod 'Fabric'
+    pod 'Crashlytics'
 
-	# UI
-	pod 'VENTokenField'
-	pod 'AsyncDisplayKit'
-	pod 'SVProgressHUD'
-	pod 'MBProgressHUD'
-	pod 'PSTAlertController'
-	pod 'PHFComposeBarView'
-	pod 'DZNPhotoPickerController'
-	pod 'HockeySDK'
-	pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
-    pod 'JVFloatLabeledTextField'
-    pod 'CLTokenInputView'
-    
-    pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
-    #pod 'SlackTextViewController'
-    
+    # Core Tools
+    pod 'RegexKitLite'
+    pod 'CocoaAsyncSocket'
+    pod 'zipzap'
+
+    # Main UI
+    pod 'SlackTextViewController'
     pod 'NYTPhotoViewer'
-    pod 'PEPhotoCropEditor'
-    pod 'TWMessageBarManager'
-    pod 'LTNavigationBar'
+    pod 'TTTAttributedLabel'
+    pod 'RSKImageCropper'
+    pod 'JDStatusBarNotification'
+
+    # Small UI
+    pod 'VBFPopFlatButton'
+    pod 'SZTextView'
+        
+    # Progress
+    pod 'M13ProgressSuite'
+    pod 'MBProgressHUD'
+
+    # Alerts
     pod 'BlockAlertsAnd-ActionSheets'
     pod 'RMUniversalAlert'
     pod 'PSTAlertController'
+
+    use_frameworks!
+    pod 'HanekeSwift', :git => 'https://github.com/ljshj/HanekeSwift'
+end
+
+target 'ActorSDK' do
+    xcodeproj 'ActorSDK.xcodeproj'
+
+    # J2Objc Runtime
+    pod 'J2ObjC-Framework'
+
+    # Core Tools
+    pod 'RegexKitLite'
+    pod 'CocoaAsyncSocket'
+    pod 'zipzap'
+
+    # Main UI
+    pod 'SlackTextViewController'
+    pod 'NYTPhotoViewer'
     pod 'TTTAttributedLabel'
+    pod 'RSKImageCropper'
+    pod 'JDStatusBarNotification'
+
+    # Small UI
+    pod 'VBFPopFlatButton'
+    pod 'SZTextView'
+        
+    # Progress
     pod 'M13ProgressSuite'
-    
-    # Tracking
-    pod 'SplunkMint-iOS'
-    pod 'Mixpanel'
+    pod 'MBProgressHUD'
+
+    # Alerts
+    pod 'BlockAlertsAnd-ActionSheets'
+    pod 'RMUniversalAlert'
+    pod 'PSTAlertController'
+
+    use_frameworks!
+    pod 'HanekeSwift', :git => 'https://github.com/ljshj/HanekeSwift'
 end
