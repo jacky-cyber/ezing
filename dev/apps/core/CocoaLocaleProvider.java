@@ -8,7 +8,8 @@ public class CocoaLocaleProvider implements LocaleRuntime {
     public native String getCurrentLocale()/*-[
         NSString * language = [[NSLocale preferredLanguages] objectAtIndex:0];
         NSLog(@"---------%@",language);
-        if([language isEqualToString:@"zh-Hans-CN"]){
+        if ([language rangeOfString:@"zh-Hans"].location != NSNotFound) {  
+            NSLog(@"zh-Hans\n");  
             language = @"cn";
         }else{
             language = [language substringWithRange:NSMakeRange(0, 2)];
