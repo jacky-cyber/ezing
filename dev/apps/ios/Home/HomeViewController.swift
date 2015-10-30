@@ -28,7 +28,7 @@ public class HomeViewController: AAViewController,UITableViewDelegate ,UITableVi
         
         // Setting UITabBarItem
         
-        tabBarItem = UITabBarItem(title: "TabDiscover", img: "TabIconChats", selImage: "TabIconChatsHighlighted")
+        tabBarItem = UITabBarItem(title: "TabDiscover", img: "TabIconDiscover", selImage: "TabIconDiscoverHighlighted")
         
         
         navigationItem.title = "易致"
