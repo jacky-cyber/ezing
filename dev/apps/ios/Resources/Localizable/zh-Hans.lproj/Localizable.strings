@@ -70,7 +70,7 @@
 
 "SettingsSecurity" = "安全";
 
-"SettingsWallpapers" = "墙纸";
+"SettingsWallpapers" = "聊天背景";
 
 "SettingsNotifications" = "通知和声音";
 
@@ -326,7 +326,7 @@
 
 "Placeholder_Loading_Title" = "正在同步中";
 
-"Placeholder_Loading_Message" = "请等待几分钟，以便我们让你的app好用。";
+"Placeholder_Loading_Message" = "正在加载数据，请稍候...";
 
 "Placeholder_Contacts_Title" = "邀请好友";
 
