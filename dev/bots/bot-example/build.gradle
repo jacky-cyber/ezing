@@ -1,0 +1,18 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+mainClassName = "im.actor.Main"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.json:json:20141113'
+    compile 'org.apache.httpcomponents:httpcore:4.2.5'
+    compile 'org.apache.httpcomponents:httpclient:4.2.5'
+    compile 'im.actor:actor-botkit:1.0.39'
+    compile 'im.actor:shardakka_2.11:0.1.16'
+}
