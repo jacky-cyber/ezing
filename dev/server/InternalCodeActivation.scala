@@ -9,13 +9,12 @@ import akka.stream.Materializer
 import akka.util.Timeout
 import im.actor.server.activation.Activation.{ CallCode, Code, EmailCode, SmsCode }
 import im.actor.server.activation._
-import im.actor.server.email.{ Content, EmailSender, Message }
+import im.actor.server.email.{ EmailSender, Content, Message }
 import im.actor.server.models.AuthCode
 import im.actor.server.persist
 import im.actor.server.sms.{ AuthCallEngine, AuthSmsEngine }
 import im.actor.util.misc.EmailUtils.isTestEmail
 import im.actor.util.misc.PhoneNumberUtils.isTestPhone
-import im.actor.util.misc.{ EmailUtils, PhoneNumberUtils }
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
@@ -28,7 +27,7 @@ object InternalCodeActivation {
 
   private[activation] final case class Send(code: Code)
 
-  private[activation] case class SendAck(result: String \/ Unit)
+  private[activation] case class SendAck(result: CodeFailure \/ Unit)
 
   private[activation] final case class ForgetSentCode(code: Code) extends Message
 
@@ -53,7 +52,7 @@ private[activation] class InternalCodeActivation(activationActor: ActorRef, conf
 
   implicit val timeout: Timeout = Timeout(20.seconds)
 
-  def send(transactionHash: Option[String], code: Code): DBIO[String \/ Unit] = (transactionHash match {
+  def send(transactionHash: Option[String], code: Code): DBIO[CodeFailure \/ Unit] = (transactionHash match {
     case Some(hash) ⇒ for (_ ← persist.AuthCodeRepo.createOrUpdate(hash, code.code)) yield ()
     case None       ⇒ DBIO.successful(())
   }) flatMap (_ ⇒ DBIO.from(sendCode(code)))
@@ -79,7 +78,7 @@ private[activation] class InternalCodeActivation(activationActor: ActorRef, conf
   private def isExpired(code: AuthCode): Boolean =
     code.createdAt.plus(config.expiration.toMillis, MILLIS).isBefore(LocalDateTime.now(ZoneOffset.UTC))
 
-  private def sendCode(code: Code): Future[String \/ Unit] = code match {
+  private def sendCode(code: Code): Future[CodeFailure \/ Unit] = code match {
     case p: PhoneCode if isTestPhone(p.phone) ⇒ Future.successful(\/-(()))
     case m: EmailCode if isTestEmail(m.email) ⇒ Future.successful(\/-(()))
     case _                                    ⇒ (activationActor ? Send(code)).mapTo[SendAck].map(_.result)
@@ -114,7 +113,7 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
     case ForgetSentCode(code) ⇒ forgetSentCode(code)
   }
 
-  private def sendCode(code: Code): Future[String \/ Unit] = {
+  private def sendCode(code: Code): Future[CodeFailure \/ Unit] = {
     if (codeWasNotSent(code)) {
       log.debug(s"Sending $code")
 
@@ -124,14 +123,14 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
         case SmsCode(phone, c)            ⇒ smsEngine.sendCode(phone, c)
         case CallCode(phone, c, language) ⇒ callEngine.sendCode(phone, c, language)
         case EmailCode(email, c) ⇒
-          emailSender.send(Message(email, s"Actor activation code: $c", Content(Some(emailTemplate.replace("$$CODE$$", c)), Some(s"Your actor activation code: $c"))))
+          emailSender.send(Message(email, s"验证码: $c", Content(Some(emailTemplate.replace("$$CODE$$", c)), Some(s"你的验证码为: $c"))))
       }) map { _ ⇒
         forgetSentCodeAfterDelay(code)
         \/-(())
-      } recover { case e ⇒ -\/("Unable to send code") }
+      } recover { case e ⇒ -\/(SendFailure("无法发送验证码")) }
     } else {
       log.debug(s"Ignoring send $code")
-      Future.successful(-\/("请稍候再试"))
+      Future.successful(-\/(BadRequest("请稍候再请求验证码")))
     }
   }
 

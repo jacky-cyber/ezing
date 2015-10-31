@@ -78,7 +78,7 @@
 
 "SettingsTwitter" = "微博";
 
-"SettingsAbout" = "主页";
+"SettingsAbout" = "关于...";
 
 "SettingsVersion" = "版本 {version}";
 
@@ -304,11 +304,11 @@
 
 "FindTitle" = "查找";
 
-"FindFieldHint" = "手机号码、昵称、或者邮件";
+"FindFieldHint" = "手机号码、昵称或邮件";
 
-"FindHint" = "请输入手机号码、昵称、或者邮件，然后点［查找］";
+"FindHint" = "请输入手机号码、昵称或者邮件，然后按‘查找’查询";
 
-"FindNotFound" = "抱歉，没有找到";
+"FindNotFound" = "抱歉，查无此人";
 
 /*
  * Placeholders
