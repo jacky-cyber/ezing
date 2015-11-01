@@ -10,15 +10,22 @@ import Foundation
 import UIKit
 import Haneke
 
-public class HomeViewController: AAViewController,UITableViewDelegate ,UITableViewDataSource {
+public class HomeViewController: UITableViewController{
     
-    var tableView :UITableView?
+    //var tableView :UITableView?
     var bots:NSArray? = []
-    public override init() {
+    public  init() {
         super.init(nibName: nil, bundle: nil)
         
-        view.backgroundColor = appStyle.vcBackyardColor
+        //view.backgroundColor = appStyle.vcBackyardColor
     }
+    
+    //public init() {
+        //super.init(style: AAContentTableStyle.SettingsPlain)
+        
+        //tabBarItem = UITabBarItem(title: "TabDiscover", img: "TabIconDiscover", selImage: "TabIconDiscoverHighlighted")
+        //navigationItem.title = "易致"
+    //}
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -33,15 +40,15 @@ public class HomeViewController: AAViewController,UITableViewDelegate ,UITableVi
         
         navigationItem.title = "易致"
         
-        self.tableView = UITableView(frame:self.view!.frame)
-        self.tableView!.delegate = self
-        self.tableView!.dataSource = self
-        self.tableView!.registerClass(UITableViewCell.self, forCellReuseIdentifier:"cell")
+        //self.tableView = UITableView(frame:view.bounds)
+        //self.tableView!.delegate = self
+        //self.tableView!.dataSource = self
+        //self.tableView!.registerClass(UITableViewCell.self, forCellReuseIdentifier:"cell")
         self.tableView!.rowHeight = 66
         
-        self.view?.addSubview(self.tableView!)
+        //self.view?.addSubview(self.tableView!)
         
-        let cache = Cache<JSON>(name: "bots_latest")
+        /*let cache = Cache<JSON>(name: "bots_latest")
         let URL = NSURL(string: "https://app.ezing.cn/bots/bots/")!
         var error:NSError?
         let isReachable = URL.checkResourceIsReachableAndReturnError(&error)
@@ -51,7 +58,7 @@ public class HomeViewController: AAViewController,UITableViewDelegate ,UITableVi
         cache.fetch(URL: URL).onSuccess { JSON in
             self.bots = JSON.dictionary?["bots"] as? NSArray;
             self.tableView?.reloadData()
-        }
+        }*/
         
     }
     
@@ -70,12 +77,12 @@ public class HomeViewController: AAViewController,UITableViewDelegate ,UITableVi
         }
     }
     
-    public func tableView(tableView:UITableView, numberOfRowsInSection section:Int) -> Int
+    public override func tableView(tableView:UITableView, numberOfRowsInSection section:Int) -> Int
     {
         return (self.bots?.count)!;
     }
     
-    public func tableView(tableView:UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell
+    public override func tableView(tableView:UITableView, cellForRowAtIndexPath indexPath:NSIndexPath) -> UITableViewCell
     {
         let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle,reuseIdentifier: "cell")
         let bot = self.bots?[indexPath.row] as! NSDictionary;
@@ -96,7 +103,7 @@ public class HomeViewController: AAViewController,UITableViewDelegate ,UITableVi
         return cell
     }
     
-    public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    public override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let bot = self.bots?[indexPath.row] as! NSDictionary;
         
         let nickname = bot["nickname"] as! NSString as String
@@ -114,10 +121,10 @@ public class HomeViewController: AAViewController,UITableViewDelegate ,UITableVi
             if user != nil {
                 self.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> Void in
                     self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
-                    self.dismiss()
+                    //self.dismiss()
                     }, failureBlock: { (val) -> Void in
                         self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
-                        self.dismiss()
+                        //self.dismiss()
                 })
             } else {
                 self.alertUser("FindNotFound")

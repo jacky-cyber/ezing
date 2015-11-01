@@ -14,12 +14,13 @@
 		2CE3FEBEF881B465BDE1045A959BFB0A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2ACD33B73078EB46A22D2D4C45BF1E6E /* Images.xcassets */; };
 		34279C7FB8E40393FEAC939F6474BE2E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 148837AEB986AFDE519BEBD3686AB073 /* main.m */; };
 		4403E543C36C1FDC89DD4E00 /* Pods_ActorApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2F298FBF1BB3C0A84996ED3 /* Pods_ActorApp.framework */; };
-		B63474141BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX.png in Resources */ = {isa = PBXBuildFile; fileRef = B634740E1BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX.png */; settings = {ASSET_TAGS = (); }; };
-		B63474151BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B634740F1BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX@2x.png */; settings = {ASSET_TAGS = (); }; };
-		B63474161BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B63474101BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX@3x.png */; settings = {ASSET_TAGS = (); }; };
-		B63474171BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape.png in Resources */ = {isa = PBXBuildFile; fileRef = B63474111BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape.png */; settings = {ASSET_TAGS = (); }; };
-		B63474181BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B63474121BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape@2x.png */; settings = {ASSET_TAGS = (); }; };
-		B63474191BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B63474131BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape@3x.png */; settings = {ASSET_TAGS = (); }; };
+		B63474141BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX.png in Resources */ = {isa = PBXBuildFile; fileRef = B634740E1BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX.png */; };
+		B63474151BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B634740F1BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX@2x.png */; };
+		B63474161BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B63474101BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX@3x.png */; };
+		B63474171BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape.png in Resources */ = {isa = PBXBuildFile; fileRef = B63474111BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape.png */; };
+		B63474181BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B63474121BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape@2x.png */; };
+		B63474191BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = B63474131BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape@3x.png */; };
+		B6749D431BE5CCBE00CD87D7 /* 1024_ezing_512.png in Resources */ = {isa = PBXBuildFile; fileRef = B6749D421BE5CCBE00CD87D7 /* 1024_ezing_512.png */; };
 		DFE814D1E12D2647AF2DBA3F76405F06 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A521812020DAAAA325065ADC32B7DEB /* AppDelegate.swift */; };
 		F45B35E37C8CB7140417EA87AAFEFDA2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 13C57576F07AC8694C15B51DFDFDC4C6 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
@@ -75,6 +76,7 @@
 		B63474111BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = NYTPhotoViewerCloseButtonXLandscape.png; path = Resources/NYTPhotoViewerCloseButtonXLandscape.png; sourceTree = "<group>"; };
 		B63474121BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "NYTPhotoViewerCloseButtonXLandscape@2x.png"; path = "Resources/NYTPhotoViewerCloseButtonXLandscape@2x.png"; sourceTree = "<group>"; };
 		B63474131BE33A33003B4DFA /* NYTPhotoViewerCloseButtonXLandscape@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "NYTPhotoViewerCloseButtonXLandscape@3x.png"; path = "Resources/NYTPhotoViewerCloseButtonXLandscape@3x.png"; sourceTree = "<group>"; };
+		B6749D421BE5CCBE00CD87D7 /* 1024_ezing_512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = 1024_ezing_512.png; path = Resources/1024_ezing_512.png; sourceTree = "<group>"; };
 		C1B62AB706C51EDEB616B70C706CAB59 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
 		DE8D1D9859D2C4D4C7EC7AD74BB65F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = "Supporting Files/Info.plist"; sourceTree = "<group>"; };
 		E2F298FBF1BB3C0A84996ED3 /* Pods_ActorApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ActorApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +127,7 @@
 		75DC9F2DE93F0AFA6A85B53C4B694EAE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B6749D421BE5CCBE00CD87D7 /* 1024_ezing_512.png */,
 				B634740E1BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX.png */,
 				B634740F1BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX@2x.png */,
 				B63474101BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX@3x.png */,
@@ -275,6 +278,7 @@
 				B63474141BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX.png in Resources */,
 				068C6E4F1BBC4BF900182516 /* Launch Screen.storyboard in Resources */,
 				B63474151BE33A33003B4DFA /* NYTPhotoViewerCloseButtonX@2x.png in Resources */,
+				B6749D431BE5CCBE00CD87D7 /* 1024_ezing_512.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
