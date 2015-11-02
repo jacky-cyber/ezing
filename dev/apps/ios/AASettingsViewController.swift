@@ -11,7 +11,7 @@ public class AASettingsViewController: AAContentTableController {
     private var emailCells: AAManagedArrayRows<ACUserEmail, AATitledCell>!
     
     private var headerCell: AAAvatarRow!
-    private var nicknameCell: AATitledRow!
+    private var nicknameCell: AATextRow!
     private var aboutCell: AATextRow!
     
     public init() {
@@ -88,11 +88,12 @@ public class AASettingsViewController: AAContentTableController {
             s.action("SettingsSetPhoto") { [unowned self] (r) -> () in
                 r.selectAction = { [unowned self] () -> Bool in
                     let hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+                    let view = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 0))!.contentView
                     self.showActionSheet(hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
                         cancelButton: "AlertCancel",
                         destructButton: self.user.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
-                        sourceView: self.view,
-                        sourceRect: self.view.bounds,
+                        sourceView: view,
+                        sourceRect: view.bounds,
                         tapClosure: { [unowned self] (index) -> () in
                             if index == -2 {
                                 self.confirmUser("PhotoRemoveGroupMessage",
@@ -159,7 +160,7 @@ public class AASettingsViewController: AAContentTableController {
             // Settings: Security
             s.navigate("SettingsSecurity", controller: AASettingsPrivacyViewController.self)
             
-            if (!AADevice.isiPad){
+            //if (!AADevice.isiPad){
             // Settings: Wallpapper
             s.custom({ [unowned self] (r: AACustomRow<AAWallpapperSettingsCell>) -> () in
                 r.height = 230
@@ -169,7 +170,7 @@ public class AASettingsViewController: AAContentTableController {
                     }
                 }
             })
-            }
+            //}
             
             ActorSDK.sharedActor().delegate.actorSettingsConfigurationDidCreated(self, section: s)
         }
@@ -181,16 +182,16 @@ public class AASettingsViewController: AAContentTableController {
         section { [unowned self] (s) -> () in
 
             // Contacts: Nicknames
-            self.nicknameCell = s.titled("ProfileUsername") { [unowned self] (r) -> () in
+            self.nicknameCell = s.text("ProfileUsername") { [unowned self] (r) -> () in
                 
-                r.accessoryType = .DisclosureIndicator
+                r.navigate = true
 
                 r.bindAction = { [unowned self] (r) -> () in
                     if let nick = self.user.getNickModel().get() {
-                        r.subtitle = "@\(nick)"
+                        r.content = "@\(nick)"
                         r.isAction = false
                     } else {
-                        r.subtitle = AALocalized("SettingsUsernameNotSet")
+                        r.content = AALocalized("SettingsUsernameNotSet")
                         r.isAction = true
                     }
                 }
@@ -222,7 +223,7 @@ public class AASettingsViewController: AAContentTableController {
                         }
                     }
                     
-                    return false
+                    return AADevice.isiPad
                 }
             }
             
@@ -263,7 +264,7 @@ public class AASettingsViewController: AAContentTableController {
                         }
                     }
                     
-                    return false
+                    return AADevice.isiPad
                 }
             }
  

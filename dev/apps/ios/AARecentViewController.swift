@@ -45,12 +45,12 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
         // Setting navigation item
         
         navigationItem.title = AALocalized("TabMessages")
-        if (!AADevice.isiPad){
+        //if (!AADevice.isiPad){
         navigationItem.leftBarButtonItem = editButtonItem()
         navigationItem.leftBarButtonItem!.title = AALocalized("NavigationEdit")
-        }else{
-            navigationItem.leftBarButtonItem = nil
-        }
+        //}else{
+        //    navigationItem.leftBarButtonItem = nil
+        //}
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "compose")
     }
     
@@ -61,17 +61,17 @@ public class AARecentViewController: AADialogsListContentController, AADialogsLi
         tableView.setEditing(editing, animated: animated)
         
         if (editing) {
-            if (!AADevice.isiPad){
+            //if (!AADevice.isiPad){
             self.navigationItem.leftBarButtonItem!.title = AALocalized("NavigationDone")
             self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Done
-            }
+            //}
             navigationItem.rightBarButtonItem = nil
         }
         else {
-            if (!AADevice.isiPad){
+            //if (!AADevice.isiPad){
             self.navigationItem.leftBarButtonItem!.title = AALocalized("NavigationEdit")
             self.navigationItem.leftBarButtonItem!.style = UIBarButtonItemStyle.Plain
-            }
+            //}
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Compose, target: self, action: "compose")
         }
         
