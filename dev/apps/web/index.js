@@ -2,111 +2,44 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-import 'babel/polyfill';
-import RouterContainer from 'utils/RouterContainer';
+import russian from './ru-RU';
+import english from './en-US';
+import spanish from './es-ES';
+import portuguese from './pt-BR';
+import chinese from './zh-CN';
 
-import crosstab from 'crosstab';
-
-import React, { Component } from 'react';
-import Router from 'react-router';
-import ReactMixin from 'react-mixin';
-import Actor from 'actor-js';
-
-import { intlData } from 'l18n';
-import { IntlMixin } from 'react-intl';
-
-import isMobile from 'utils/isMobile';
-
-import { endpoints } from 'constants/ActorAppConstants'
-
-import LoginActionCreators from 'actions/LoginActionCreators';
-
-import LoginStore from 'stores/LoginStore';
-import PreferencesStore from 'stores/PreferencesStore';
-
-import Deactivated from 'components/Deactivated.react';
-import Login from 'components/Login.react';
-import Main from 'components/Main.react';
-import JoinGroup from 'components/JoinGroup.react';
-import Install from 'components/Install.react';
-//import AppCache from 'utils/AppCache'; // eslint-disable-line
-
-import 'utils/Bugsnag';
-
-// Loading progress
-import Pace from 'pace';
-Pace.start({
-  ajax: false,
-  restartOnRequestAfter: false,
-  restartOnPushState: false
-});
-
-
-const { DefaultRoute, Route, RouteHandler } = Router;
-
-const ActorInitEvent = 'concurrentActorInit';
-
-if (crosstab.supported) {
-  crosstab.on(ActorInitEvent, (msg) => {
-    if (msg.origin !== crosstab.id && window.location.hash !== '#/deactivated') {
-      window.location.assign('#/deactivated');
-      window.location.reload();
-    }
-  });
+let language = navigator.language.toLocaleLowerCase() || navigator.browserLanguage.toLocaleLowerCase();
+if (language === 'zh-cn') {
+  language = 'zh'
 }
 
-// Check for mobile device, and force users to install native apps.
-if (isMobile() && window.location.hash !== '#/install') {
-  window.location.assign('#/install');
-  document.body.classList.add('overflow');
-} else if (window.location.hash === '#/install') {
-  window.location.assign('/');
+// Intl polyfill
+if (!global.Intl) {
+  const request = new XMLHttpRequest();
+  const url = window.location.href;
+  const arr = url.split('/');
+  const localeDataPath = arr[0] + '//' + arr[2] + '/' + arr[3] + '/assets/locale-data/' + language + '.json';
+//https://www.ezing.cn/app/index.html#/auth?nextPath=%2F
+  require('intl');
+
+  function addLocaleData() {
+    IntlPolyfill.__addLocaleData(JSON.parse(this.response));
+  }
+
+  request.addEventListener('load', addLocaleData);
+  request.open('GET', localeDataPath);
+  request.send();
 }
 
-@ReactMixin.decorate(IntlMixin)
-class App extends Component {
-  render() {
-    return <RouteHandler/>;
-  }
-}
-
-const initReact = () => {
-  const appRootElemet = document.getElementById('actor-web-app');
-
-  if (window.location.hash !== '#/deactivated') {
-    if (crosstab.supported) {
-      crosstab.broadcast(ActorInitEvent, {});
-    }
-
-    if (location.pathname === '/app/index.html') {
-      window.messenger = Actor.create(['wss://wss.ezing.cn/']);
-    } else {
-      window.messenger = Actor.create(['wss://wss.ezing.cn/']);
-    }
-  }
-
-  const routes = (
-    <Route handler={App} name="app" path="/">
-      <Route handler={Main} name="main" path="/im/:id"/>
-      <Route handler={JoinGroup} name="join" path="/join/:token"/>
-      <Route handler={Login} name="login" path="/auth"/>
-      <Route handler={Deactivated} name="deactivated" path="/deactivated"/>
-      <Route handler={Install} name="install" path="/install"/>
-      <DefaultRoute handler={Main}/>
-    </Route>
-  );
-
-  const router = Router.create(routes, Router.HashLocation);
-
-  RouterContainer.set(router);
-
-  router.run((Root) => React.render(<Root {...intlData}/>, appRootElemet));
-
-  if (window.location.hash !== '#/deactivated') {
-    if (LoginStore.isLoggedIn()) {
-      LoginActionCreators.setLoggedIn(router, {redirect: false});
-    }
-  }
+// Set language data
+const languageData = {
+  'ru': russian,
+  'en': english,
+  'es': spanish,
+  'pt': portuguese,
+  'zh': chinese
 };
 
-window.jsAppLoaded = () => setTimeout(initReact, 0);
+const intlData = languageData[language] || languageData[language.split('-')[0]] || languageData['en'];
+
+export default { intlData };
