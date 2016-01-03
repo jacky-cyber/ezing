@@ -8,7 +8,7 @@ import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.server.db.DbExtension
-import im.actor.server.file.{ FileErrors, FileStorageAdapter, ImageUtils, S3StorageExtension }
+import im.actor.server.file.{ FileStorageExtension, FileErrors, FileStorageAdapter, ImageUtils }
 import im.actor.server.persist
 import im.actor.server.sequence.{ SequenceErrors, SeqState }
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
@@ -25,10 +25,10 @@ object ProfileErrors {
     "昵称不符合规则，昵称应该由英文字母（a-z）、数字、下划线（_）组成，最少5个字，最多32个字。", false, None)
   val NicknameBusy = RpcError(400, "NICKNAME_BUSY", "此昵称已经被其他人使用，请选择其他昵称。", false, None)
   val AboutTooLong = RpcError(400, "ABOUT_TOO_LONG",
-    "个性签名太长，不能超过255个字。", false, None)
+    "个性签名不能超过255个字。", false, None)
 }
 
-class ProfileServiceImpl()(
+final class ProfileServiceImpl()(
   implicit
   actorSystem: ActorSystem
 ) extends ProfileService {
@@ -43,7 +43,7 @@ class ProfileServiceImpl()(
   private val db: Database = DbExtension(actorSystem).db
   private val userExt = UserExtension(actorSystem)
   private implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
-  private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(actorSystem).s3StorageAdapter
+  private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(actorSystem).fsAdapter
 
   override def jhandleEditAvatar(fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] = {
     // TODO: flatten
@@ -91,25 +91,19 @@ class ProfileServiceImpl()(
 
   def jhandleEditNickName(nickname: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
-      val action = for {
-        trimmed ← point(nickname.map(_.trim))
-        _ ← fromBoolean(ProfileErrors.NicknameInvalid)(trimmed.map(StringUtils.validNickName).getOrElse(true))
-        _ ← if (trimmed.isDefined) {
-          for {
-            checkExist ← fromOption(ProfileErrors.NicknameInvalid)(trimmed)
-            _ ← fromFutureBoolean(ProfileErrors.NicknameBusy)(db.run(persist.UserRepo.nicknameExists(checkExist).map(exist ⇒ !exist)))
-          } yield ()
-        } else point(())
-        SeqState(seq, state) ← fromFuture(userExt.changeNickname(client.userId, trimmed))
-      } yield ResponseSeq(seq, state.toByteArray)
-      action.run
+      for {
+        SeqState(seq, state) ← userExt.changeNickname(client.userId, nickname)
+      } yield Ok(ResponseSeq(seq, state.toByteArray))
+    } recover {
+      case UserErrors.NicknameTaken   ⇒ Error(ProfileErrors.NicknameBusy)
+      case UserErrors.InvalidNickname ⇒ Error(ProfileErrors.NicknameInvalid)
     }
   }
 
   def jhandleCheckNickName(nickname: String, clientData: ClientData): Future[HandlerResult[ResponseBool]] = {
     authorized(clientData) { implicit client ⇒
       (for {
-        _ ← fromBoolean(ProfileErrors.NicknameInvalid)(StringUtils.validNickName(nickname))
+        _ ← fromBoolean(ProfileErrors.NicknameInvalid)(StringUtils.validUsername(nickname))
         exists ← fromFuture(db.run(persist.UserRepo.nicknameExists(nickname.trim)))
       } yield ResponseBool(!exists)).run
     }
