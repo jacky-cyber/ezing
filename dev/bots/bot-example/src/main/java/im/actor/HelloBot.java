@@ -28,7 +28,7 @@ public class HelloBot extends RemoteBot {
 
     public HelloBot(String token, String endpoint) {
         //super(token, endpoint);
-        super(token, "ws://54.223.205.123:9090");
+        super(token, "ws://54.223.103.148:9090");
         // Creating KeyValue. Don't try to understand this, this is not necessary.
         // We will improve this in future versions
         // "msgs" is name of storage, asJava is required for better Java API.
@@ -106,6 +106,11 @@ public class HelloBot extends RemoteBot {
         /*if ((TextMessage)msg.message()) {
 
         }*/
+    }
+
+    @Override
+    public void onRawUpdate(BotMessages.RawUpdate upd) {
+        System.out.println("----------");
     }
 
     @Override
