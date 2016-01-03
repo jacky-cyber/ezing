@@ -24,6 +24,7 @@ import im.actor.server.sequence.{ PushRules, SequenceErrors }
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.UserCommands._
 import im.actor.server.{ model, persist ⇒ p }
+import im.actor.util.misc.StringUtils
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -40,6 +41,8 @@ object UserErrors {
 
   case object NicknameTaken extends UserError("昵称已被他人使用")
 
+  case object InvalidNickname extends UserError("无效昵称")
+
   final case class InvalidTimeZone(tz: String) extends UserError(s"无效时区: $tz")
 
   final case class InvalidLocale(locale: String) extends UserError(s"无效国家／地区: $locale")
@@ -51,7 +54,7 @@ object UserErrors {
 private object ServiceMessages {
   def contactRegistered(userId: Int, name: String)(implicit system: ActorSystem) = {
     val systemName = ActorConfig.systemName
-    ApiServiceMessage(s"$name 已注册 $systemName", Some(ApiServiceExContactRegistered(userId)))
+    ApiServiceMessage(s"$name 已注册", Some(ApiServiceExContactRegistered(userId)))
   }
 }
 
@@ -185,15 +188,18 @@ private[user] trait UserCommandHandlers {
 
     onSuccess(checkNicknameExists(nicknameOpt)) { exists ⇒
       if (!exists) {
-        persistReply(TSEvent(now(), UserEvents.NicknameChanged(nicknameOpt)), user, replyTo) { _ ⇒
-          val update = UpdateUserNickChanged(userId, nicknameOpt)
+        if (nicknameOpt map StringUtils.validUsername getOrElse true) {
+          persistReply(TSEvent(now(), UserEvents.NicknameChanged(nicknameOpt)), user, replyTo) { _ ⇒
+            val update = UpdateUserNickChanged(userId, nicknameOpt)
 
-          for {
-            _ ← db.run(p.UserRepo.setNickname(userId, nicknameOpt))
-            relatedUserIds ← getRelations(userId)
-            (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relatedUserIds, update)
-          } yield seqstate
-        }
+            for {
+              _ ← db.run(p.UserRepo.setNickname(userId, nicknameOpt))
+              relatedUserIds ← getRelations(userId)
+              (seqstate, _) ← seqUpdatesExt.broadcastOwnSingleUpdate(userId, relatedUserIds, update)
+            } yield seqstate
+          }
+        } else
+          replyTo ! Status.Failure(UserErrors.InvalidNickname)
       } else {
         replyTo ! Status.Failure(UserErrors.NicknameTaken)
       }
@@ -340,8 +346,9 @@ private[user] trait UserCommandHandlers {
           _ ← userExt.addContact(contact.ownerUserId, user.id, localName, Some(phoneNumber), None)
           _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(s"${localName.getOrElse(user.name)} 已注册"), isFat = true, deliveryId = None)
           _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, deliveryId = None)
-          _ ← dialogExt.writeMessage(
-            ApiPeer(ApiPeerType.Private, contact.ownerUserId),
+          _ ← dialogExt.writeMessageSelf(
+            contact.ownerUserId,
+            ApiPeer(ApiPeerType.Private, user.id),
             user.id,
             date,
             randomId,
@@ -371,8 +378,9 @@ private[user] trait UserCommandHandlers {
           _ ← userExt.addContact(contact.ownerUserId, user.id, localName, None, Some(email))
           _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactRegistered, Some(serviceMessage.text), isFat = true, deliveryId = None)
           _ ← userExt.broadcastUserUpdate(contact.ownerUserId, updateContactsAdded, None, isFat = false, deliveryId = None)
-          _ ← dialogExt.writeMessage(
-            ApiPeer(ApiPeerType.Private, contact.ownerUserId),
+          _ ← dialogExt.writeMessageSelf(
+            contact.ownerUserId,
+            ApiPeer(ApiPeerType.Private, user.id),
             user.id,
             date,
             randomId,
