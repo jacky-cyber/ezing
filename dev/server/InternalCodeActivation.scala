@@ -5,6 +5,7 @@ import java.time.{ LocalDateTime, ZoneOffset }
 
 import akka.actor._
 import akka.pattern.ask
+import akka.pattern.pipe
 import akka.stream.Materializer
 import akka.util.Timeout
 import im.actor.server.activation.Activation.{ CallCode, Code, EmailCode, SmsCode }
@@ -20,6 +21,14 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 import scalaz.{ -\/, \/, \/- }
+
+final class DummySmsEngine extends AuthSmsEngine {
+  override def sendCode(phoneNumber: Long, code: String): Future[Unit] = Future.successful(())
+}
+
+final class DummyCallEngine extends AuthCallEngine {
+  override def sendCode(phoneNumber: Long, code: String, language: String): Future[Unit] = Future.successful(())
+}
 
 object InternalCodeActivation {
 
@@ -112,8 +121,7 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
 
   override def receive: Receive = {
     case Send(code) ⇒
-      val replyTo = sender()
-      sendCode(code) foreach { resp ⇒ replyTo ! SendAck(resp) }
+      (sendCode(code) map SendAck) pipeTo sender()
     case ForgetSentCode(code) ⇒ forgetSentCode(code)
   }
 
@@ -131,7 +139,11 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, callEngine: Au
       }) map { _ ⇒
         forgetSentCodeAfterDelay(code)
         \/-(())
-      } recover { case e ⇒ -\/(SendFailure("无法发送验证码")) }
+      } recover {
+        case e ⇒
+          log.error(e, "Failed to send code: {}", code)
+          -\/(SendFailure("无法发送验证码"))
+      }
     } else {
       log.debug(s"Ignoring send $code")
       Future.successful(-\/(BadRequest("请稍候再请求验证码")))
