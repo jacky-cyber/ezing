@@ -30,6 +30,8 @@ NSString * const SLKTextViewPastedItemContentType =                 @"SLKTextVie
 NSString * const SLKTextViewPastedItemMediaType =                   @"SLKTextViewPastedItemMediaType";
 NSString * const SLKTextViewPastedItemData =                        @"SLKTextViewPastedItemData";
 
+static NSString *const SLKTextViewGenericFormattingSelectorPrefix = @"slk_format_";
+
 @interface SLKTextView ()
 
 // The label used as placeholder
@@ -49,9 +51,14 @@ NSString * const SLKTextViewPastedItemData =                        @"SLKTextVie
 // Used for detecting if the scroll indicator was previously flashed
 @property (nonatomic) BOOL didFlashScrollIndicators;
 
+@property (nonatomic, strong) NSMutableArray *registeredFormattingTitles;
+@property (nonatomic, strong) NSMutableArray *registeredFormattingSymbols;
+@property (nonatomic, getter=isFormatting) BOOL formatting;
+
 @end
 
 @implementation SLKTextView
+@synthesize delegate = _delegate;
 
 #pragma mark - Initialization
 
@@ -77,7 +84,8 @@ NSString * const SLKTextViewPastedItemData =                        @"SLKTextVie
     _dynamicTypeEnabled = YES;
 
     self.undoManagerEnabled = YES;
-
+    self.autoCompleteFormatting = YES;
+    
     self.editable = YES;
     self.selectable = YES;
     self.scrollEnabled = YES;
@@ -104,6 +112,15 @@ NSString * const SLKTextViewPastedItemData =                        @"SLKTextVie
 + (BOOL)requiresConstraintBasedLayout
 {
     return YES;
+}
+
+- (void)layoutIfNeeded
+{
+    if (!self.window) {
+        return;
+    }
+    
+    [super layoutIfNeeded];
 }
 
 - (void)layoutSubviews
@@ -162,10 +179,26 @@ NSString * const SLKTextViewPastedItemData =                        @"SLKTextVie
 
 - (NSUInteger)numberOfLines
 {
-    CGFloat contentHeight = self.contentSize.height;
+    CGSize contentSize = self.contentSize;
+    
+    CGFloat contentHeight = contentSize.height;
     contentHeight -= self.textContainerInset.top + self.textContainerInset.bottom;
-
-    return fabs(contentHeight/self.font.lineHeight);
+    
+    NSUInteger lines = fabs(contentHeight/self.font.lineHeight);
+    
+    // This helps preventing the content's height to be larger that the bounds' height
+    // Avoiding this way to have unnecessary scrolling in the text view when there is only 1 line of content
+    if (lines == 1 && contentSize.height > self.bounds.size.height) {
+        contentSize.height = self.bounds.size.height;
+        self.contentSize = contentSize;
+    }
+    
+    // Let's fallback to the minimum line count
+    if (lines == 0) {
+        lines = 1;
+    }
+    
+    return lines;
 }
 
 - (NSUInteger)maxNumberOfLines
@@ -200,6 +233,14 @@ NSString * const SLKTextViewPastedItemData =                        @"SLKTextVie
 - (BOOL)isTypingSuggestionEnabled
 {
     return (self.autocorrectionType == UITextAutocorrectionTypeNo) ? NO : YES;
+}
+
+- (BOOL)autoCompleteFormatting
+{
+    if (_registeredFormattingSymbols.count == 0) {
+        return NO;
+    }
+    return _autoCompleteFormatting;
 }
 
 // Returns only a supported pasted item
@@ -353,11 +394,12 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 
 - (CGRect)slk_placeholderRectThatFits:(CGRect)bounds
 {
-    CGRect rect = CGRectZero;
-    rect.size = [self.placeholderLabel sizeThatFits:bounds.size];
-    rect.origin = UIEdgeInsetsInsetRect(bounds, self.textContainerInset).origin;
-    
     CGFloat padding = self.textContainer.lineFragmentPadding;
+    
+    CGRect rect = CGRectZero;
+    rect.size.height = [self.placeholderLabel sizeThatFits:bounds.size].height;
+    rect.size.width = self.textContainer.size.width - padding*2.0;
+    rect.origin = UIEdgeInsetsInsetRect(bounds, self.textContainerInset).origin;
     rect.origin.x += padding;
     
     return rect;
@@ -407,15 +449,6 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 
 #pragma mark - UITextView Overrides
 
-- (void)layoutIfNeeded
-{
-    if (!self.window) {
-        return;
-    }
-    
-    [super layoutIfNeeded];
-}
-
 - (void)setSelectedRange:(NSRange)selectedRange
 {
     [super setSelectedRange:selectedRange];
@@ -452,7 +485,7 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 {
     NSString *contentSizeCategory = [[UIApplication sharedApplication] preferredContentSizeCategory];
     
-    [self setFontName:font.familyName pointSize:font.pointSize withContentSizeCategory:contentSizeCategory];
+    [self setFontName:font.fontName pointSize:font.pointSize withContentSizeCategory:contentSizeCategory];
     
     self.initialFontSize = font.pointSize;
 }
@@ -481,7 +514,7 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     
     NSString *contentSizeCategory = [[UIApplication sharedApplication] preferredContentSizeCategory];
 
-    [self setFontName:self.font.familyName pointSize:self.initialFontSize withContentSizeCategory:contentSizeCategory];
+    [self setFontName:self.font.fontName pointSize:self.initialFontSize withContentSizeCategory:contentSizeCategory];
 }
 
 - (void)setTextAlignment:(NSTextAlignment)textAlignment
@@ -522,12 +555,7 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 
 - (BOOL)canBecomeFirstResponder
 {
-    // Adds undo/redo items to the Menu Controller
-    if (self.undoManagerEnabled) {
-        UIMenuItem *undo = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"撤销", nil) action:@selector(slk_undo:)];
-        UIMenuItem *redo = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"重做", nil) action:@selector(slk_redo:)];
-        [[UIMenuController sharedMenuController] setMenuItems:@[undo,redo]];
-    }
+    [self slk_addCustomMenuControllerItems];
     
     return [super canBecomeFirstResponder];
 }
@@ -541,7 +569,6 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 {
     // Removes undo/redo items
     if (self.undoManagerEnabled) {
-        [[UIMenuController sharedMenuController] setMenuItems:@[]];
         [self.undoManager removeAllActions];
     }
     
@@ -555,12 +582,35 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender
 {
+    if (self.isFormatting) {
+        NSString *title = [self slk_formattingTitleFromSelector:action];
+        NSString *symbol = [self slk_formattingSymbolWithTitle:title];
+        
+        if (symbol.length > 0) {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(textView:shouldOfferFormattingForSymbol:)]) {
+                return [self.delegate textView:self shouldOfferFormattingForSymbol:symbol];
+            }
+            else {
+                return YES;
+            }
+        }
+        
+        return NO;
+    }
+
     if (action == @selector(delete:)) {
         return NO;
     }
     
-    if ((action == @selector(copy:) || action == @selector(cut:))
-        && self.selectedRange.length > 0) {
+    if (action == NSSelectorFromString(@"_share:") || action == NSSelectorFromString(@"_define:") || action == NSSelectorFromString(@"_promptForReplace:")) {
+        return NO;
+    }
+    
+    if (action == @selector(slk_presentFormattingMenu:)) {
+        return self.selectedRange.length > 0 ? YES : NO;
+    }
+    
+    if (action == @selector(paste:) && [self slk_isPasteboardItemSupported]) {
         return YES;
     }
     
@@ -604,6 +654,29 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
         // Inserting the text fixes a UITextView bug whitch automatically scrolls to the bottom
         // and beyond scroll content size sometimes when the text is too long
         [self slk_insertTextAtCaretRange:pastedItem];
+    }
+}
+
+
+#pragma mark - NSObject Overrides
+
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)sel
+{
+    if ([super methodSignatureForSelector:sel]) {
+        return [super methodSignatureForSelector:sel];
+    }
+    return [super methodSignatureForSelector:@selector(slk_format:)];
+}
+
+- (void)forwardInvocation:(NSInvocation *)invocation
+{
+    NSString *title = [self slk_formattingTitleFromSelector:[invocation selector]];
+    
+    if (title.length > 0) {
+        [self slk_format:title];
+    }
+    else {
+        [super forwardInvocation:invocation];
     }
 }
 
@@ -674,6 +747,15 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     _didNotResignFirstResponder = NO;
 }
 
+- (void)slk_addCustomMenuControllerItems
+{
+    UIMenuItem *undo = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"撤销", nil) action:@selector(slk_undo:)];
+    UIMenuItem *redo = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"重做", nil) action:@selector(slk_redo:)];
+    UIMenuItem *format = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"格式化", nil) action:@selector(slk_presentFormattingMenu:)];
+    
+    [[UIMenuController sharedMenuController] setMenuItems:@[undo, redo, format]];
+}
+
 - (void)slk_undo:(id)sender
 {
     [self.undoManager undo];
@@ -682,6 +764,104 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
 - (void)slk_redo:(id)sender
 {
     [self.undoManager redo];
+}
+
+- (void)slk_presentFormattingMenu:(id)sender
+{
+    NSMutableArray *items = [NSMutableArray arrayWithCapacity:self.registeredFormattingTitles.count];
+    
+    for (NSString *name in self.registeredFormattingTitles) {
+        
+        NSString *sel = [NSString stringWithFormat:@"%@%@", SLKTextViewGenericFormattingSelectorPrefix, name];
+        
+        UIMenuItem *item = [[UIMenuItem alloc] initWithTitle:name action:NSSelectorFromString(sel)];
+        [items addObject:item];
+    }
+    
+    self.formatting = YES;
+    
+    UIMenuController *menu = [UIMenuController sharedMenuController];
+    [menu setMenuItems:items];
+    
+    NSLayoutManager *manager = self.layoutManager;
+    CGRect targetRect = [manager boundingRectForGlyphRange:self.selectedRange inTextContainer:self.textContainer];
+    
+    [menu setTargetRect:targetRect inView:self];
+    
+    [menu setMenuVisible:YES animated:YES];
+}
+
+- (NSString *)slk_formattingTitleFromSelector:(SEL)selector
+{
+    NSString *selectorString = NSStringFromSelector(selector);
+    NSRange match = [selectorString rangeOfString:SLKTextViewGenericFormattingSelectorPrefix];
+    
+    if (match.location != NSNotFound) {
+        return [selectorString substringFromIndex:SLKTextViewGenericFormattingSelectorPrefix.length];
+    }
+    
+    return nil;
+}
+
+- (NSString *)slk_formattingSymbolWithTitle:(NSString *)title
+{
+    NSUInteger idx = [self.registeredFormattingTitles indexOfObject:title];
+    
+    if (idx <= self.registeredFormattingSymbols.count -1) {
+        return self.registeredFormattingSymbols[idx];
+    }
+    
+    return nil;
+}
+
+- (void)slk_format:(NSString *)titles
+{
+    NSString *symbol = [self slk_formattingSymbolWithTitle:titles];
+    
+    if (symbol.length > 0) {
+        NSRange selection = self.selectedRange;
+        
+        NSRange range = [self slk_insertText:symbol inRange:NSMakeRange(selection.location, 0)];
+        range.location += selection.length;
+        range.length = 0;
+        
+        // The default behavior is to add a closure
+        BOOL addClosure = YES;
+        
+        if (self.delegate && [self.delegate respondsToSelector:@selector(textView:shouldInsertSuffixForFormattingWithSymbol:prefixRange:)]) {
+            addClosure = [self.delegate textView:self shouldInsertSuffixForFormattingWithSymbol:symbol prefixRange:selection];
+        }
+        
+        if (addClosure) {
+            self.selectedRange = [self slk_insertText:symbol inRange:range];
+        }
+    }
+}
+
+
+#pragma mark - Markdown Formatting
+
+- (void)registerMarkdownFormattingSymbol:(NSString *)symbol withTitle:(NSString *)title
+{
+    if (!symbol || !title) {
+        return;
+    }
+    
+    if (!_registeredFormattingTitles) {
+        _registeredFormattingTitles = [NSMutableArray new];
+        _registeredFormattingSymbols = [NSMutableArray new];
+    }
+    
+    // Adds the symbol if not contained already
+    if (![self.registeredSymbols containsObject:symbol]) {
+        [self.registeredFormattingTitles addObject:title];
+        [self.registeredFormattingSymbols addObject:symbol];
+    }
+}
+
+- (NSArray *)registeredSymbols
+{
+    return self.registeredFormattingSymbols;
 }
 
 
@@ -718,6 +898,11 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     // Do something
 }
 
+- (void)slk_didChangeTextInputMode:(NSNotification *)notification
+{
+    // Do something
+}
+
 - (void)slk_didChangeContentSizeCategory:(NSNotification *)notification
 {
     if (!self.isDynamicTypeEnabled) {
@@ -726,13 +911,25 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     
     NSString *contentSizeCategory = notification.userInfo[UIContentSizeCategoryNewValueKey];
     
-    [self setFontName:self.font.familyName pointSize:self.initialFontSize withContentSizeCategory:contentSizeCategory];
+    [self setFontName:self.font.fontName pointSize:self.initialFontSize withContentSizeCategory:contentSizeCategory];
     
     NSString *text = [self.text copy];
     
     // Reloads the content size of the text view
     [self setText:@" "];
     [self setText:text];
+}
+
+- (void)slk_willShowMenuController:(NSNotification *)notification
+{
+    
+}
+
+- (void)slk_didHideMenuController:(NSNotification *)notification
+{
+    self.formatting = NO;
+    
+    [self slk_addCustomMenuControllerItems];
 }
 
 
@@ -924,7 +1121,10 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(slk_didBeginEditing:) name:UITextViewTextDidBeginEditingNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(slk_didChangeText:) name:UITextViewTextDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(slk_didEndEditing:) name:UITextViewTextDidEndEditingNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(slk_didChangeTextInputMode:) name:UITextInputCurrentInputModeDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(slk_didChangeContentSizeCategory:) name:UIContentSizeCategoryDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(slk_willShowMenuController:) name:UIMenuControllerWillShowMenuNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(slk_didHideMenuController:) name:UIMenuControllerDidHideMenuNotification object:nil];
 }
 
 - (void)slk_unregisterNotifications
@@ -932,6 +1132,7 @@ SLKPastableMediaType SLKPastableMediaTypeFromNSString(NSString *string)
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidBeginEditingNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextViewTextDidEndEditingNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UITextInputCurrentInputModeDidChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIContentSizeCategoryDidChangeNotification object:nil];
 }
 
