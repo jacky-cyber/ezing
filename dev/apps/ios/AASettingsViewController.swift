@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -11,8 +11,8 @@ public class AASettingsViewController: AAContentTableController {
     private var emailCells: AAManagedArrayRows<ACUserEmail, AATitledCell>!
     
     private var headerCell: AAAvatarRow!
-    private var nicknameCell: AATextRow!
-    private var aboutCell: AATextRow!
+    private var nicknameCell: AATitledRow!
+    private var aboutCell: AATitledRow!
     
     public init() {
         super.init(style: AAContentTableStyle.SettingsPlain)
@@ -160,7 +160,6 @@ public class AASettingsViewController: AAContentTableController {
             // Settings: Security
             s.navigate("SettingsSecurity", controller: AASettingsPrivacyViewController.self)
             
-            //if (!AADevice.isiPad){
             // Settings: Wallpapper
             s.custom({ [unowned self] (r: AACustomRow<AAWallpapperSettingsCell>) -> () in
                 r.height = 230
@@ -168,30 +167,33 @@ public class AASettingsViewController: AAContentTableController {
                     cell.wallpapperDidTap = { [unowned self] (name) -> () in
                         self.presentViewController(AAWallpapperPreviewController(imageName: name), animated: true, completion: nil)
                     }
+                    
                 }
+                
+                r.selectAction = { () -> Bool in
+                    self.navigateNext(AASettingsWallpapersController(), removeCurrent: false)
+                    return false
+                }
+
             })
-            //}
             
             ActorSDK.sharedActor().delegate.actorSettingsConfigurationDidCreated(self, section: s)
         }
         
-        
-        
         // Contacts
-        if (!AADevice.isiPad){
         section { [unowned self] (s) -> () in
 
             // Contacts: Nicknames
-            self.nicknameCell = s.text("ProfileUsername") { [unowned self] (r) -> () in
+            self.nicknameCell = s.titled("ProfileUsername") { [unowned self] (r) -> () in
                 
-                r.navigate = true
+                r.accessoryType = .DisclosureIndicator
 
                 r.bindAction = { [unowned self] (r) -> () in
                     if let nick = self.user.getNickModel().get() {
-                        r.content = "@\(nick)"
+                        r.subtitle = "@\(nick)"
                         r.isAction = false
                     } else {
-                        r.content = AALocalized("SettingsUsernameNotSet")
+                        r.subtitle = AALocalized("SettingsUsernameNotSet")
                         r.isAction = true
                     }
                 }
@@ -228,16 +230,16 @@ public class AASettingsViewController: AAContentTableController {
             }
             
             // Contacts: About
-            self.aboutCell = s.text("ProfileAbout") { [unowned self] (r) -> () in
-
-                r.navigate = true
+            self.aboutCell = s.titled("ProfileAbout") { [unowned self] (r) -> () in
+                
+                r.accessoryType = .DisclosureIndicator
                 
                 r.bindAction = { [unowned self] (r) -> () in
                     if let about = self.user.getAboutModel().get() {
-                        r.content = about
+                        r.subtitle = about
                         r.isAction = false
                     } else {
-                        r.content = AALocalized("SettingsAboutNotSet")
+                        r.subtitle = AALocalized("SettingsAboutNotSet")
                         r.isAction = true
                     }
                 }
@@ -266,6 +268,7 @@ public class AASettingsViewController: AAContentTableController {
                     
                     return AADevice.isiPad
                 }
+                
             }
  
             // Profile: Phones
@@ -276,7 +279,7 @@ public class AASettingsViewController: AAContentTableController {
                 r.data = self.user.getPhonesModel().get().toSwiftArray()
                 
                 r.bindData = { (c: AATitledCell, d: ACUserPhone) -> () in
-                    c.setContent(d.title, content: "+\(d.phone)", isAction: false)
+                    c.setContent(AALocalized("SettingsMobilePhone"), content: "+\(d.phone)", isAction: false)
                     c.accessoryType = .None
                 }
                 
@@ -289,8 +292,6 @@ public class AASettingsViewController: AAContentTableController {
                     if (!hasPhone) {
                         UIPasteboard.generalPasteboard().string = "+\(d.phone)"
                         self.alertUser("NumberCopied")
-                    } else {
-                        ActorSDK.sharedActor().openUrl("telprompt://+\(d.phone)")
                     }
                     return true
                 }
@@ -318,8 +319,7 @@ public class AASettingsViewController: AAContentTableController {
             }
 
         }
-        }
-    
+        
         // Support
         section { (s) -> () in
             
@@ -357,7 +357,7 @@ public class AASettingsViewController: AAContentTableController {
 
             // Support: App version
             let version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
-            s.hint(version.replace("{version}", dest: version))
+            s.hint(AALocalized("SettingsVersion").replace("{version}", dest: version))
             
             ActorSDK.sharedActor().delegate.actorSettingsSupportDidCreated(self, section: s)
         }
@@ -383,7 +383,6 @@ public class AASettingsViewController: AAContentTableController {
             self.headerCell.reload()
         }
         
-        if (!AADevice.isiPad){
         // Bind nick
         
         binder.bind(user.getNickModel()) { [unowned self] (value: String?) -> () in
@@ -409,6 +408,5 @@ public class AASettingsViewController: AAContentTableController {
             self.emailCells.data = (emails?.toSwiftArray())!
             self.emailCells.reload()
         })
-        }
     }
 }
