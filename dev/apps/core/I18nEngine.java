@@ -18,6 +18,8 @@ import im.actor.core.entity.Notification;
 import im.actor.core.entity.PeerType;
 import im.actor.core.entity.Sex;
 import im.actor.core.entity.User;
+import im.actor.core.entity.content.ServiceCallEnded;
+import im.actor.core.entity.content.ServiceCallMissed;
 import im.actor.core.entity.content.ServiceContent;
 import im.actor.core.entity.content.ServiceGroupAvatarChanged;
 import im.actor.core.entity.content.ServiceGroupCreated;
@@ -41,7 +43,7 @@ public class I18nEngine {
 
     private static final String TAG = "I18nEngine";
 
-    private static final String[] SUPPORTED_LOCALES = new String[]{"Ru", "Ar", "Cn", "Pt"};
+    private static final String[] SUPPORTED_LOCALES = new String[]{"Ru", "Ar", "Zn", "Pt", "Es"};
 
     private final Modules modules;
     private final LocaleRuntime runtime;
@@ -128,6 +130,15 @@ public class I18nEngine {
         return y1 == y2 && m1 == m2 && d1 == d2;
     }
 
+    @ObjectiveCName("getApplicationName")
+    public String getApplicationName() {
+        String appName = modules.getConfiguration().getCustomAppName();
+        if (appName == null) {
+            appName = locale.get("AppName");
+        }
+        return appName;
+    }
+
     @ObjectiveCName("formatShortDate:")
     public String formatShortDate(long date) {
         // Not using Calendar for GWT
@@ -147,6 +158,13 @@ public class I18nEngine {
             int d = date1.getDate();
             return runtime.formatDate(date);//d + " " + MONTHS_SHORT[month].toUpperCase();
         }
+    }
+
+    @ObjectiveCName("formatMonth:")
+    public String formatMonth(Date date) {
+        int month = date.getMonth();
+        int d = date.getDate();
+        return d + " " + MONTHS[month].toUpperCase();
     }
 
     @ObjectiveCName("formatTyping")
@@ -338,6 +356,16 @@ public class I18nEngine {
                 return locale.get("ContentPhoto");
             case DOCUMENT_VIDEO:
                 return locale.get("ContentVideo");
+            case DOCUMENT_AUDIO:
+                return locale.get("ContentAudio");
+            case CONTACT:
+                return locale.get("Contact");
+            case LOCATION:
+                return locale.get("Location");
+            case STICKER:
+                return locale.get("Sticker");
+            case CUSTOM_JSON_MESSAGE:
+                return text;
             case SERVICE:
                 return text;// Should be service message
             case SERVICE_REGISTERED:
@@ -360,6 +388,10 @@ public class I18nEngine {
                 return getTemplateNamed(senderId, "ServiceGroupTitle");
             case SERVICE_JOINED:
                 return getTemplateNamed(senderId, "ServiceGroupJoined");
+            case SERVICE_CALL_ENDED:
+                return locale.get("ServiceCallEnded");
+            case SERVICE_CALL_MISSED:
+                return locale.get("ServiceCallMissed");
             case NONE:
                 return "";
             default:
@@ -415,6 +447,10 @@ public class I18nEngine {
             }
         } else if (content instanceof ServiceGroupUserJoined) {
             return getTemplateNamed(senderId, "ServiceGroupJoined");
+        } else if (content instanceof ServiceCallEnded) {
+            return locale.get("ServiceCallEnded");
+        } else if (content instanceof ServiceCallMissed) {
+            return locale.get("ServiceCallMissed");
         }
 
         return content.getCompatText();

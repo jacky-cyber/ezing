@@ -10,7 +10,7 @@ public class CocoaLocaleProvider implements LocaleRuntime {
         NSLog(@"---------%@",language);
         if ([language rangeOfString:@"zh-Hans"].location != NSNotFound) {  
             NSLog(@"zh-Hans\n");  
-            language = @"cn";
+            language = @"zn";
         }else{
             language = [language substringWithRange:NSMakeRange(0, 2)];
         }
