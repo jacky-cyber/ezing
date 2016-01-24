@@ -1,5 +1,5 @@
 //
-//  Copyright (C) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 /*
@@ -44,14 +44,14 @@
 
 "SettingsSetPhoto" = "设置头像";
 
-"SettingsChangeName" = "修改名字";
+"SettingsChangeName" = "修改姓名";
 
 
-"SettingsEditHeader" = "名字";
+"SettingsEditHeader" = "姓名";
 
-"SettingsEditHint" = "请输入你的真实名字，以方便朋友们了解你是谁";
+"SettingsEditHint" = "请输入您的真实姓名，以便于好友识别。";
 
-"SettingsEditFieldHint" = "请输入名字";
+"SettingsEditFieldHint" = "请输入姓名";
 
 
 "SettingsAboutNotSet" = "设置个性签名";
@@ -82,11 +82,13 @@
 
 "SettingsVersion" = "版本 {version}";
 
+"SettingsMobilePhone"    = "手机";
+
 /*
  * Profile
  */
 
-"ProfileEditHeader" = "修改名字";
+"ProfileEditHeader" = "修改姓名";
 
 "ProfileSendMessage" = "发送消息";
 
@@ -118,13 +120,13 @@
 
 "CopyNumber" = "复制手机号码";
 
-"NumberCopied" = "手机号码已经复制到剪贴板中";
+"NumberCopied" = "手机已经复制到剪贴板中";
 
 /*
  * Publics
  */
 
-"JoinAlertMessage" = "你要加入这个群吗？";
+"JoinAlertMessage" = "你要加入这个群组吗？";
 
 /*
  * Group
@@ -190,7 +192,7 @@
 
 "GroupInviteLinkHint" = "发送邀请链接即可邀请你的朋友加入此群组。";
 
-"GroupInviteLinkRevokeMessage" = "确定要重置这个链接吗？重置后其他人将无法使用这个链接加入群组。";
+"GroupInviteLinkRevokeMessage" = "确定要废除这个链接，废除后其他人将无法使用这个链接加入群组。";
 
 "GroupInviteLinkRevokeAction" = "重置";
 
@@ -202,9 +204,9 @@
 
 "GroupIntegrationDoc" = "打开文档";
 
-"GroupIntegrationLinkRevokeMessage" = "确定要废除这个链接，废除后其他系统将无法使用这个链接发送消息。";
+"GroupIntegrationLinkRevokeMessage" = "确定要重置这个链接，重置后其他系统将无法使用这个链接发送消息。";
 
-"GroupIntegrationLinkRevokeAction" = "废除";
+"GroupIntegrationLinkRevokeAction" = "重置";
 
 "GroupJoinMessage" = "确定要加入群组吗?";
 
@@ -224,11 +226,11 @@
 
 "CreateGroupNamePlaceholder" = "输入群组名称";
 
-"CreateGroupHint" = "请设置群组名称和头像";
+"CreateGroupHint" = "设置群组名称和头像";
 
 "CreateGroupMembersTitle" = "邀请";
 
-"CreateGroupMembersPlaceholders" = "输入名字";
+"CreateGroupMembersPlaceholders" = "输入姓名";
 
 /*
  * Notifications
@@ -272,13 +274,13 @@
 
 "SecurityTitle" = "安全";
 
-"PrivacyTerminate" = "终止所有会话";
+"PrivacyTerminate" = "退出其它登录设备";
 
-"PrivacyTerminateAlert" = "终止所有会话";
+"PrivacyTerminateAlert" = "退出其它已登录设备";
 
-"PrivacyTerminateAlertSingle" = "终止会话";
+"PrivacyTerminateAlertSingle" = "退出此设备";
 
-"PrivacyTerminateHint" = "退出除此设备之外的所有设备。";
+"PrivacyTerminateHint" = "退出除此设备之外的所有登录设备。";
 
 /*
  * Wallpapers
@@ -286,7 +288,7 @@
 
 "WallpapersTitle" = "墙纸";
 
-"WallpapersPhoto" = "相册";
+"WallpapersPhoto" = "手机相册";
 
 /*
  * Chat
@@ -316,7 +318,7 @@
 
 "Placeholder_Empty_Title" = "邀请你的朋友";
 
-"Placeholder_Empty_Message" = "你的通讯录中没有人使用，请点击下面按钮邀请他们。";
+"Placeholder_Empty_Message" = "你的通讯录中没有人使用此系统，请点击下面按钮邀请他们。";
 
 "Placeholder_Empty_Action" = "告诉你的朋友";
 
@@ -330,9 +332,9 @@
 
 "Placeholder_Contacts_Title" = "邀请好友";
 
-"Placeholder_Contacts_Message" = "你的通讯录中没有人使用，请点击下面按钮邀请他们。";
+"Placeholder_Contacts_Message" = "你的通讯录中没有人使用系统，请点击下面按钮邀请他们。";
 
-"Placeholder_Contacts_Action" = "告诉好友";
+"Placeholder_Contacts_Action" = "邀请好友";
 
 "Placeholder_Contacts_Message2" = "或者点击右上角的＋按钮手动添加好友";
 
@@ -342,7 +344,7 @@
 
 "Placeholder_Group_Title" = "不是一个群组成员";
 
-"Placeholder_Group_Message" = "非常不幸，您不是群组成员。";
+"Placeholder_Group_Message" = "您不是群组成员。";
 
 /*
  * Auth
@@ -350,7 +352,7 @@
 
 "AuthPhoneTitle" = "你的手机";
 
-"AuthPhoneNumberHint" = "你的手机号码";
+"AuthPhoneNumberHint" = "你的电话号码";
 
 "AuthPhoneHint" = "请选择国家并输入手机号码。";
 
@@ -358,11 +360,11 @@
 
 "AuthCodeFieldHint" = "验证码";
 
-"AuthCodeHint" = "已经通过短信为你发送验证码，请稍侯";
+"AuthCodeHint" = "已经通过短信为你发送验证码，请稍侯。";
 
 "AuthCallHint" = "{time}秒后拨打手机告知验证码";
 
-"AuthCallDoneHint" = "已经给您拨打电话.";
+"AuthCallDoneHint" = "已经给您拨打电话";
 
 "AuthNoCodeHint" = "无法获取验证码?";
 
@@ -372,9 +374,17 @@
 
 "AuthProfileAddPhoto2" = "头像";
 
-"AuthProfileNameHint" = "你的名字";
+"AuthProfileNameHint" = "你的姓名";
 
-"AuthProfileHint" = "请输入你的名字并上传头像";
+"AuthProfileHint" = "请输入你的姓名并上传头像";
+
+"AuthTerms" = "注册即表明您同意系统的使用条款";
+
+/*
+ * Location
+ */
+
+"LocationTitle" = "位置";
 
 /*
  * Common Elements
@@ -382,7 +392,7 @@
 
 "CurrentLocale" = "Cn";
 
-"InviteText" = "安全快捷的即时通讯工具－易致，下载地址 {link}";
+"InviteText" = "我们自己的端对端加密的即时通讯工具： {link}";
 
 "PhotoRemove" = "删除头像";
 
@@ -393,6 +403,10 @@
 "PhotoLibrary" = "相册";
 
 "SendDocument" = "文档";
+
+"ShareLocation" = "位置";
+
+"ShareContact" = "通讯录";
 
 "NavigationEdit" = "编辑";
 
@@ -454,9 +468,19 @@
 
 "ErrorUnableToJoin" = "无法加入群组";
 
-/*
- *
- */
+"ErrorUnableToCall" = "无法拨打这个号码";
+
+"SettingsAllSessions" = "登录设备管理";
+
+"SettingsLastSeen" = "最后上线信息显示";
+
+"SettingsLastSeenEverybody" = "所有人可见最后上线信息";
+
+"SettingsLastSeenContacts" = "仅好友可见最后上线信息";
+
+"SettingsLastSeenNone" = "隐藏最后上线信息";
+
+"SettingsLastSeenHint" = "设置最后上线信息显示对象或者隐藏最后上线信息";
 
 "Undo Typing" = "撤销输入";
 
@@ -465,5 +489,3 @@
 "Redo" = "重做";
 
 "Cancel" = "取消";
-
-"NewMessages" = "新消息";

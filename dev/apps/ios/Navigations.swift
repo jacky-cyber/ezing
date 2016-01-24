@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -13,6 +13,11 @@ public extension UIViewController {
             detail.viewControllers = [controller]
             split.viewControllers = [master, detail]
         } else {
+            
+            if controller.isKindOfClass(ConversationViewController.self) {
+                navigationController?.view.layer.speed = 1.5
+            }
+            
             controller.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(controller, animated: true);
         }
@@ -21,34 +26,24 @@ public extension UIViewController {
 
 public extension UIViewController {
     public func navigateNext(controller: UIViewController, removeCurrent: Bool = false) {
-        if (AADevice.isiPad && UIApplication.sharedApplication().keyWindow?.rootViewController is UISplitViewController) {
-            let split = UIApplication.sharedApplication().keyWindow?.rootViewController as! UISplitViewController;
-            let master = split.viewControllers[0]
-            let detail = AANavigationController()
-            detail.viewControllers = [controller]
-            split.viewControllers = [master, detail]
-        }else{
-            if let aaC = controller as? AAViewController, let aaSelf = self as? AAViewController  {
-                aaC.popover = aaSelf.popover
-            }
-            
-            controller.hidesBottomBarWhenPushed = true
-            if (!removeCurrent) {
-                self.navigationController!.pushViewController(controller, animated: true);
-            } else {
-                var nControllers = [UIViewController]()
-                var oldControllers = self.navigationController!.viewControllers
-                if (oldControllers.count >= 2) {
-                    for i in 0...(oldControllers.count - 2) {
-                        nControllers.append(oldControllers[i])
-                    }
-                }
-                nControllers.append(controller)
-                self.navigationController!.setViewControllers(nControllers, animated: true);
-            }
+        if let aaC = controller as? AAViewController, let aaSelf = self as? AAViewController  {
+            aaC.popover = aaSelf.popover
         }
         
-        
+        controller.hidesBottomBarWhenPushed = true
+        if (!removeCurrent) {
+            self.navigationController!.pushViewController(controller, animated: true);
+        } else {
+            var nControllers = [UIViewController]()
+            var oldControllers = self.navigationController!.viewControllers
+            if (oldControllers.count >= 2) {
+                for i in 0...(oldControllers.count - 2) {
+                    nControllers.append(oldControllers[i])
+                }
+            }
+            nControllers.append(controller)
+            self.navigationController!.setViewControllers(nControllers, animated: true);
+        }
     }
     
     public func navigateBack() {

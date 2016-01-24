@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -39,9 +39,20 @@ public class ActorSDK {
 
     /// Server Endpoints
     public var endpoints = [
-        "tls://actor.ezing.cn",
-        "tls://actor.ezingsoft.com"
+        "tls://actor.ezing.cn"
+        
+    ] {
+        didSet {
+            trustedKeys = []
+        }
+    }
+    
+    /// Trusted Server Keys
+    public var trustedKeys = [
+        "3febe18c96630ace1d3afdf3de444a474f8f1a4d9cd5c2753289ce99efc67f17"
     ]
+    
+    //
     
     /// API ID
     public var apiId = 2
@@ -50,28 +61,37 @@ public class ActorSDK {
     public var apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"
     
     /// Push registration mode
-    public var autoPushMode = AAAutoPush.FromStart
+    public var autoPushMode = AAAutoPush.AfterLogin
     
     /// Push token registration id. Required for sending push tokens
-    public var apiPushId: Int? = 1
+    public var apiPushId: Int? = nil
+    
+    /// Enable phone book import
+    public var enablePhoneBookImport = true
     
     /// Invitation URL for apps
-    public var inviteUrl: String = "https://app.ezing.cn"
+    public var inviteUrl: String = "https://actor.im/dl"
+    
+    /// App name in loc. strings
+    public var appNameInLocStrings: String = "Actor"
+    
+    /// Use background on welcome screen
+    public var useBackgroundOnWelcomeScreen: Bool? = false
     
     /// Support email
-    public var supportEmail: String? = "support@ezingsoft.com"
+    public var supportEmail: String? = nil
     
     /// Support email
-    public var supportActivationEmail: String? = "support@ezingsoft.com"
+    public var supportActivationEmail: String? = nil
     
     /// Support account
     public var supportAccount: String? = nil
     
     /// Support home page
-    public var supportHomepage: String? = "https://app.ezing.cn"
+    public var supportHomepage: String? = "https://actor.im"
 
     /// Support account
-    public var supportTwitter: String? = nil
+    public var supportTwitter: String? = "actorapp"
 
     /// Invite url scheme
     public var inviteUrlScheme: String? = nil
@@ -82,6 +102,9 @@ public class ActorSDK {
     /// Extensions
     private var extensions = [ActorExtension]()
     
+    /// Enable experimental features
+    public var enableExperimentalFeatures: Bool = false
+    
     //
     // User Onlines
     //
@@ -91,7 +114,7 @@ public class ActorSDK {
     
     /// Disable this if you want manually handle online states
     public var automaticOnlineHandling = true
-
+    
     //
     // Internal State
     //
@@ -135,6 +158,9 @@ public class ActorSDK {
         for url in endpoints {
             builder.addEndpoint(url)
         }
+        for key in trustedKeys {
+            builder.addTrustedKey(key)
+        }
         builder.setApiConfiguration(ACApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
         
         // Providers
@@ -163,6 +189,14 @@ public class ActorSDK {
         
         // Logs
         // builder.setEnableFilesLogging(true)
+        
+        // Application name
+        if (appNameInLocStrings != "Actor") {
+            builder.setCustomAppName(AALocalized(appNameInLocStrings))
+        }
+        
+        // Config
+        builder.setPhoneBookImportEnabled(jboolean(enablePhoneBookImport))
         
         // Creating messenger
         messenger = ACCocoaMessenger(configuration: builder.build())
@@ -240,12 +274,10 @@ public class ActorSDK {
         if controller == nil {
             let tab = AARootTabViewController()
             tab.viewControllers = [
-                AANavigationController(rootViewController: HomeViewController()),
-                AANavigationController(rootViewController: AARecentViewController()),
                 AANavigationController(rootViewController: AAContactsViewController()),
+                AANavigationController(rootViewController: AARecentViewController()),
                 AANavigationController(rootViewController: AASettingsViewController())]
             tab.selectedIndex = 0
-            tab.selectedIndex = 2
             tab.selectedIndex = 1
             
             if (AADevice.isiPad) {
@@ -304,12 +336,10 @@ public class ActorSDK {
             if controller == nil {
                 let tab = AARootTabViewController()
                 tab.viewControllers = [
-                    AANavigationController(rootViewController: HomeViewController()),
-                    AANavigationController(rootViewController: AARecentViewController()),
                     AANavigationController(rootViewController: AAContactsViewController()),
+                    AANavigationController(rootViewController: AARecentViewController()),
                     AANavigationController(rootViewController: AASettingsViewController())]
                 tab.selectedIndex = 0
-                tab.selectedIndex = 2
                 tab.selectedIndex = 1
                 
                 if (AADevice.isiPad) {
@@ -324,7 +354,8 @@ public class ActorSDK {
         } else {
             var controller: UIViewController! = delegate.actorControllerForAuthStart()
             if controller == nil {
-                controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
+                //controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
+                controller = AAAuthNavigationController(rootViewController: AAWelcomeController())
             }
             window.rootViewController = controller!
         }

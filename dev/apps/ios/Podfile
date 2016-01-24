@@ -21,13 +21,13 @@ target 'ActorApp' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
+    pod 'SDWebImage/WebP'
 
     # Main UI
-    pod 'SlackTextViewController'
-    pod 'NYTPhotoViewer'
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
+    pod 'Neon'
 
     # Small UI
     pod 'VBFPopFlatButton'
@@ -36,14 +36,12 @@ target 'ActorApp' do
     # Progress
     pod 'M13ProgressSuite'
     pod 'MBProgressHUD'
+    pod 'SVProgressHUD'
 
     # Alerts
     pod 'BlockAlertsAnd-ActionSheets'
     pod 'RMUniversalAlert'
     pod 'PSTAlertController'
-
-    use_frameworks!
-    pod 'HanekeSwift', :git => 'https://github.com/ljshj/HanekeSwift'
 end
 
 target 'ActorSDK' do
@@ -56,10 +54,9 @@ target 'ActorSDK' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
+    pod 'SDWebImage/WebP'
 
     # Main UI
-    pod 'SlackTextViewController'
-    pod 'NYTPhotoViewer'
     pod 'TTTAttributedLabel'
     pod 'RSKImageCropper'
     pod 'JDStatusBarNotification'
@@ -71,12 +68,10 @@ target 'ActorSDK' do
     # Progress
     pod 'M13ProgressSuite'
     pod 'MBProgressHUD'
+    pod 'SVProgressHUD'
 
     # Alerts
     pod 'BlockAlertsAnd-ActionSheets'
     pod 'RMUniversalAlert'
     pod 'PSTAlertController'
-
-    use_frameworks!
-    pod 'HanekeSwift', :git => 'https://github.com/ljshj/HanekeSwift'
 end

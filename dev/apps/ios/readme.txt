@@ -8,3 +8,13 @@ AABubbleCell.swift 				/Users/rikinzan/Documents/actor-platform/actor-sdk/sdk-co
 
     
     pod 'HanekeSwift', :git => 'https://github.com/ljshj/HanekeSwift'
+
+
+Allow Arbitrary Loads
+<key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
+
+
