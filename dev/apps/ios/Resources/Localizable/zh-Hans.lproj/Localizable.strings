@@ -300,6 +300,24 @@
 
 "ChatNoGroupAccess" = "你不是群组成员";
 
+"ChatNewMessages" = "新消息";
+
+"ChatVoiceMessage" = "语音消息";
+
+"ChatHoldToTalk" = "按住 说话";
+
+"ChatReleaseToSend" = "松开 发送";
+
+"ChatSlideUpToCancel" = "Slide up to cancel";
+
+/*
+ * Chat attachment menu
+ */
+
+"AttachmentsSendPhoto" = "发送{count}张照片";
+
+"AttachmentsSendPhotos" = "发送{count}张照片";
+
 /*
  * Find
  */
@@ -392,7 +410,7 @@
 
 "CurrentLocale" = "Cn";
 
-"InviteText" = "我们自己的端对端加密的即时通讯工具： {link}";
+"InviteText" = "我们吉林艺术学院自己的端对端加密的即时通讯工具： https://app.ezing.cn/jlart";
 
 "PhotoRemove" = "删除头像";
 
@@ -489,3 +507,6 @@
 "Redo" = "重做";
 
 "Cancel" = "取消";
+
+"AuthTermsOfServiceFull" = "注册即表明您同意系统的服务条款";
+"AuthTermsOfService" = "服务条款";
