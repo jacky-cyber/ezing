@@ -132,9 +132,9 @@
  * Group
  */
 
-"GroupEditHeader" = "主题";
+"GroupEditHeader" = "群组名称";
 
-"GroupEditHint" = "输入群组主题";
+"GroupEditHint" = "输入群组名称";
 
 "GroupSetPhoto" = "设置群组头像";
 
@@ -308,7 +308,7 @@
 
 "ChatReleaseToSend" = "松开 发送";
 
-"ChatSlideUpToCancel" = "Slide up to cancel";
+"ChatSlideUpToCancel" = "滑动 取消";
 
 /*
  * Chat attachment menu
@@ -410,7 +410,7 @@
 
 "CurrentLocale" = "Cn";
 
-"InviteText" = "我们吉林艺术学院自己的端对端加密的即时通讯工具： https://app.ezing.cn/jlart";
+"InviteText" = "端对端加密的即时通讯工具： https://app.ezing.cn/";
 
 "PhotoRemove" = "删除头像";
 
