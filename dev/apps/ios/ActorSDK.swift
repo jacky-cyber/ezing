@@ -64,34 +64,34 @@ public class ActorSDK {
     public var autoPushMode = AAAutoPush.AfterLogin
     
     /// Push token registration id. Required for sending push tokens
-    public var apiPushId: Int? = nil
+    public var apiPushId: Int? = 102
     
     /// Enable phone book import
     public var enablePhoneBookImport = true
     
     /// Invitation URL for apps
-    public var inviteUrl: String = "https://actor.im/dl"
+    public var inviteUrl: String = "https://app.ezing.cn"
     
     /// App name in loc. strings
-    public var appNameInLocStrings: String = "Actor"
+    public var appNameInLocStrings: String = "吉林艺术学院"
     
     /// Use background on welcome screen
     public var useBackgroundOnWelcomeScreen: Bool? = false
     
     /// Support email
-    public var supportEmail: String? = nil
+    public var supportEmail: String? = "support@ezingsoft.com"
     
     /// Support email
-    public var supportActivationEmail: String? = nil
+    public var supportActivationEmail: String? = "support@ezingsoft.com"
     
     /// Support account
     public var supportAccount: String? = nil
     
     /// Support home page
-    public var supportHomepage: String? = "https://actor.im"
+    public var supportHomepage: String? = "https://app.ezing.cn/jlart/"
 
     /// Support account
-    public var supportTwitter: String? = "actorapp"
+    public var supportTwitter: String? = nil
 
     /// Invite url scheme
     public var inviteUrlScheme: String? = nil
@@ -274,10 +274,12 @@ public class ActorSDK {
         if controller == nil {
             let tab = AARootTabViewController()
             tab.viewControllers = [
-                AANavigationController(rootViewController: AAContactsViewController()),
+                AANavigationController(rootViewController: HomeViewController()),
                 AANavigationController(rootViewController: AARecentViewController()),
+                AANavigationController(rootViewController: AAContactsViewController()),
                 AANavigationController(rootViewController: AASettingsViewController())]
             tab.selectedIndex = 0
+            tab.selectedIndex = 2
             tab.selectedIndex = 1
             
             if (AADevice.isiPad) {
@@ -336,10 +338,12 @@ public class ActorSDK {
             if controller == nil {
                 let tab = AARootTabViewController()
                 tab.viewControllers = [
-                    AANavigationController(rootViewController: AAContactsViewController()),
+                    AANavigationController(rootViewController: HomeViewController()),
                     AANavigationController(rootViewController: AARecentViewController()),
+                    AANavigationController(rootViewController: AAContactsViewController()),
                     AANavigationController(rootViewController: AASettingsViewController())]
                 tab.selectedIndex = 0
+                tab.selectedIndex = 2
                 tab.selectedIndex = 1
                 
                 if (AADevice.isiPad) {
@@ -354,8 +358,8 @@ public class ActorSDK {
         } else {
             var controller: UIViewController! = delegate.actorControllerForAuthStart()
             if controller == nil {
-                //controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
-                controller = AAAuthNavigationController(rootViewController: AAWelcomeController())
+                controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
+                //controller = AAAuthNavigationController(rootViewController: AAWelcomeController())
             }
             window.rootViewController = controller!
         }
