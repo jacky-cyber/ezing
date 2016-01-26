@@ -21,7 +21,7 @@ target 'ActorApp' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'SDWebImage/WebP'
+    pod 'YYKit'
 
     # Main UI
     pod 'TTTAttributedLabel'
@@ -42,6 +42,12 @@ target 'ActorApp' do
     pod 'BlockAlertsAnd-ActionSheets'
     pod 'RMUniversalAlert'
     pod 'PSTAlertController'
+    
+    pod 'TOWebViewController', :git => 'https://github.com/ljshj/TOWebViewController'
+
+    use_frameworks!
+    pod 'HanekeSwift', :git => 'https://github.com/ljshj/HanekeSwift'
+
 end
 
 target 'ActorSDK' do
@@ -54,7 +60,7 @@ target 'ActorSDK' do
     pod 'RegexKitLite'
     pod 'CocoaAsyncSocket'
     pod 'zipzap'
-    pod 'SDWebImage/WebP'
+    pod 'YYKit'
 
     # Main UI
     pod 'TTTAttributedLabel'
@@ -74,4 +80,9 @@ target 'ActorSDK' do
     pod 'BlockAlertsAnd-ActionSheets'
     pod 'RMUniversalAlert'
     pod 'PSTAlertController'
+
+    pod 'TOWebViewController', :git => 'https://github.com/ljshj/TOWebViewController'
+
+    use_frameworks!
+    pod 'HanekeSwift', :git => 'https://github.com/ljshj/HanekeSwift'
 end

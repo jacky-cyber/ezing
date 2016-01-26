@@ -170,7 +170,7 @@
 
 "GroupMemberWrite" = "编辑消息";
 
-"GroupMemberCall" = "打电话";
+"GroupMemberCall" = "拨打手机";
 
 "GroupMemberCallNoPhones" = "此用户没有手机号码。";
 
@@ -370,7 +370,7 @@
 
 "AuthPhoneTitle" = "你的手机";
 
-"AuthPhoneNumberHint" = "你的电话号码";
+"AuthPhoneNumberHint" = "你的手机号码";
 
 "AuthPhoneHint" = "请选择国家并输入手机号码。";
 
@@ -382,7 +382,7 @@
 
 "AuthCallHint" = "{time}秒后拨打手机告知验证码";
 
-"AuthCallDoneHint" = "已经给您拨打电话";
+"AuthCallDoneHint" = "已经给您拨打手机";
 
 "AuthNoCodeHint" = "无法获取验证码?";
 
@@ -478,7 +478,7 @@
  * Errors
  */
 
-"ErrorPhoneIncorrect" = "输入被邀请人的电话号码，再试一次。";
+"ErrorPhoneIncorrect" = "输入被邀请人的手机号码，再试一次。";
 
 "ErrorCodeExpired" = "验证码过期。请重新验证一次。";
 
@@ -509,4 +509,5 @@
 "Cancel" = "取消";
 
 "AuthTermsOfServiceFull" = "注册即表明您同意系统的服务条款";
+
 "AuthTermsOfService" = "服务条款";
