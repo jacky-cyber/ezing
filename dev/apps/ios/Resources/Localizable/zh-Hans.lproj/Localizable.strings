@@ -18,23 +18,19 @@
  * Contacts
  */
 
-"ContactsAddHeader" = "添加联系人";
+"ContactsAddHeader" = "添加好友";
 
 "ContactsAddHint" = "请输入手机号码";
 
-"ContactsActionInvite" = "邀请";
+"ContactsActionInvite" = "邀请好友";
 
-"ContactsActionAdd" = "添加";
+"ContactsActionAdd" = "添加好友";
 
 /*
  * Dialogs
  */
 
 "DialogsHint" = "";
-
-/*
- * Discover
- */
 
 /*
  * Settings
@@ -62,15 +58,17 @@
 
 "SettingsUsernameHintField" = "请输入昵称";
 
-"SettingsUsernameHint" = "设置昵称后，其他人可以通过昵称找到你。\n\n昵称可以由a-z、0-9及下划线组成，最少5个字.";
+"SettingsUsernameHint" = "设置昵称后，其他人可以通过昵称找到你。\n\n昵称可以由a-z、0-9及下划线组成，最少5个字。";
 
 "SettingsChangeAboutTitle" = "个性签名";
 
 "SettingsChangeAboutHint" = "请输入个性签名";
 
+
 "SettingsSecurity" = "安全";
 
 "SettingsWallpapers" = "聊天背景";
+
 
 "SettingsNotifications" = "通知和声音";
 
@@ -81,6 +79,21 @@
 "SettingsAbout" = "关于...";
 
 "SettingsVersion" = "版本 {version}";
+
+
+"SettingsAllSessions" = "登录设备管理";
+
+"SettingsLastSeen" = "最后上线信息显示";
+
+"SettingsLastSeenEverybody" = "所有人可见最后上线信息";
+
+
+"SettingsLastSeenEverybody" = "所有人可见最后上线信息";
+
+"SettingsLastSeenContacts" = "仅好友可见最后上线信息";
+
+"SettingsLastSeenNone" = "隐藏最后上线信息";
+
 
 "SettingsMobilePhone"    = "手机";
 
@@ -120,7 +133,7 @@
 
 "CopyNumber" = "复制手机号码";
 
-"NumberCopied" = "手机已经复制到剪贴板中";
+"NumberCopied" = "手机号码已经复制到剪贴板中";
 
 /*
  * Publics
@@ -192,7 +205,7 @@
 
 "GroupInviteLinkHint" = "发送邀请链接即可邀请你的朋友加入此群组。";
 
-"GroupInviteLinkRevokeMessage" = "确定要废除这个链接，废除后其他人将无法使用这个链接加入群组。";
+"GroupInviteLinkRevokeMessage" = "确定要重置这个链接，重置后其他人将无法使用这个链接加入群组。";
 
 "GroupInviteLinkRevokeAction" = "重置";
 
@@ -350,7 +363,7 @@
 
 "Placeholder_Contacts_Title" = "邀请好友";
 
-"Placeholder_Contacts_Message" = "你的通讯录中没有人使用系统，请点击下面按钮邀请他们。";
+"Placeholder_Contacts_Message" = "你的通讯录中没有人使用{appname}，请点击下面按钮邀请他们。";
 
 "Placeholder_Contacts_Action" = "邀请好友";
 
@@ -368,11 +381,19 @@
  * Auth
  */
 
+"AuthMoreInfo" = "免费、快速、安全的移动门户";
+
+"AuthStarButton" = "开始";
+
 "AuthPhoneTitle" = "你的手机";
 
-"AuthPhoneNumberHint" = "你的手机号码";
+"AuthPhoneNumberHint" = "手机号码";
 
 "AuthPhoneHint" = "请选择国家并输入手机号码。";
+
+"AuthTermsOfServiceFull" = "注册即表明您同意系统的服务条款。";
+
+"AuthTermsOfService" = "服务条款";
 
 "AuthPhoneTooShort" = "手机号码太短";
 
@@ -392,11 +413,11 @@
 
 "AuthProfileAddPhoto2" = "头像";
 
-"AuthProfileNameHint" = "你的姓名";
+"AuthProfileNameHint" = "姓名";
 
-"AuthProfileHint" = "请输入你的姓名并上传头像";
+"AuthProfileHint" = "请输入姓名并上传头像";
 
-"AuthTerms" = "注册即表明您同意系统的使用条款";
+"AuthTerms" = "";
 
 /*
  * Location
@@ -410,7 +431,7 @@
 
 "CurrentLocale" = "Cn";
 
-"InviteText" = "端对端加密的即时通讯工具： https://app.ezing.cn/";
+"InviteText" = "您好！让我们一起使用{appname}安全开聊吧! {link}";
 
 "PhotoRemove" = "删除头像";
 
@@ -424,7 +445,11 @@
 
 "ShareLocation" = "位置";
 
-"ShareContact" = "通讯录";
+"ShareContact" = "联系";
+
+/*
+ *  Navigation
+ */
 
 "NavigationEdit" = "编辑";
 
@@ -438,7 +463,11 @@
 
 "NavigationSave" = "保存";
 
-"NavigationFind" = "查找";
+"NavigationFind" = "发现";
+
+/*
+ *  Alerts
+ */
 
 "AlertCancel" = "取消";
 
@@ -446,7 +475,7 @@
 
 "AlertSave" = "保存";
 
-"AlertSet" = "设置";
+"AlertSet" = "Set";
 
 "AlertOk" = "确定";
 
@@ -462,13 +491,21 @@
 
 "UnsupportedContent" = "这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。";
 
+/*
+ * Actions
+ */
+
 "ActionCopyLink" = "复制链接";
 
-"ActionRevokeLink" = "重置链接";
+"ActionRevokeLink" = "废除链接";
 
 "ActionShareLink" = "分享链接";
 
 "AlertLinkCopied" = "链接已经被复制到剪贴板。";
+
+/*
+ * Network
+ */
 
 "StatusConnecting" = "连接中...";
 
@@ -488,18 +525,6 @@
 
 "ErrorUnableToCall" = "无法拨打这个号码";
 
-"SettingsAllSessions" = "登录设备管理";
-
-"SettingsLastSeen" = "最后上线信息显示";
-
-"SettingsLastSeenEverybody" = "所有人可见最后上线信息";
-
-"SettingsLastSeenContacts" = "仅好友可见最后上线信息";
-
-"SettingsLastSeenNone" = "隐藏最后上线信息";
-
-"SettingsLastSeenHint" = "设置最后上线信息显示对象或者隐藏最后上线信息";
-
 "Undo Typing" = "撤销输入";
 
 "Undo" = "撤销";
@@ -507,7 +532,3 @@
 "Redo" = "重做";
 
 "Cancel" = "取消";
-
-"AuthTermsOfServiceFull" = "注册即表明您同意系统的服务条款";
-
-"AuthTermsOfService" = "服务条款";

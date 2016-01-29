@@ -5,7 +5,7 @@ import java.util.TimeZone
 
 import akka.actor.{ ActorSystem, Status }
 import akka.pattern.pipe
-import im.actor.api.rpc.contacts.{ UpdateContactRegistered, UpdateContactsAdded }
+import im.actor.api.rpc.contacts.{ UpdateContactsRemoved, UpdateContactRegistered, UpdateContactsAdded }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ApiExtension
 import im.actor.api.rpc.peers.{ ApiPeer, ApiPeerType }
@@ -30,7 +30,7 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
-import scala.util.Failure
+import scala.util.{ Failure, Success }
 import scala.util.control.NoStackTrace
 
 abstract class UserError(message: String) extends RuntimeException(message) with NoStackTrace
@@ -43,13 +43,15 @@ object UserErrors {
 
   case object InvalidNickname extends UserError("无效昵称")
 
-  case object InvalidName extends UserError("无效名字")
+  case object InvalidName extends UserError("无效姓名")
 
   final case class InvalidTimeZone(tz: String) extends UserError(s"无效时区: $tz")
 
   final case class InvalidLocale(locale: String) extends UserError(s"无效国家／地区: $locale")
 
   case object EmptyLocalesList extends UserError("空的国家／地区列表")
+
+  final case object ContactNotFound extends UserError("联系人未找到")
 
 }
 
@@ -100,7 +102,11 @@ private[user] trait UserCommandHandlers {
             external = external,
             isBot = isBot
           )
-          db.run(for (_ ← p.UserRepo.create(user)) yield CreateAck())
+          db.run(for {
+            _ ← p.UserRepo.create(user)
+          } yield CreateAck()) andThen {
+            case Success(_) ⇒ userExt.hooks.afterCreate.runAll(user.id)
+          }
         }
       } else {
         replyTo ! Status.Failure(UserErrors.NicknameTaken)
@@ -331,6 +337,24 @@ private[user] trait UserCommandHandlers {
       update = UpdateContactsAdded(idsLocalNames.keys.toVector)
       seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, update, PushRules(isFat = true))
     } yield seqstate) pipeTo sender()
+  }
+
+  protected def removeContact(
+    user:          User,
+    contactUserId: Int
+  ): Unit = {
+    val updLocalName = UpdateUserLocalNameChanged(contactUserId, None)
+    val updContact = UpdateContactsRemoved(Vector(contactUserId))
+
+    (db.run(UserContactRepo.find(user.id, contactUserId)) flatMap {
+      case Some(_) ⇒
+        for {
+          _ ← db.run(UserContactRepo.delete(user.id, contactUserId))
+          _ ← seqUpdatesExt.deliverSingleUpdate(user.id, updLocalName)
+          seqstate ← seqUpdatesExt.deliverSingleUpdate(user.id, updContact)
+        } yield seqstate
+      case None ⇒ Future.failed(UserErrors.ContactNotFound)
+    }) pipeTo sender()
   }
 
   private def checkNicknameExists(nicknameOpt: Option[String]): Future[Boolean] = {

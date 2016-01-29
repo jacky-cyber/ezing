@@ -101,10 +101,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.stickersButton.frame = CGRectMake(self.view.frame.size.width-67, 12, 20, 20)
         self.stickersButton.addTarget(self, action: "changeKeyboard", forControlEvents: UIControlEvents.TouchUpInside)
         
-        //self.textInputbar.addSubview(stickersButton)
+        self.textInputbar.addSubview(stickersButton)
         
         // Check text for set right button
-        let checkText = Actor.loadDraftWithPeer(peer).stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        let checkText = Actor.loadDraftWithPeer(peer)!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         
         if (checkText.isEmpty) {
             
@@ -219,7 +219,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         super.viewWillAppear(animated)
         
         // Installing bindings
-        if (UInt(peer.peerType.ordinal()) == ACPeerType.PRIVATE.rawValue) {
+        if (peer.peerType.ordinal() == ACPeerType.PRIVATE().ordinal()) {
             let user = Actor.getUserWithUid(peer.peerId)
             let nameModel = user.getNameModel();
             
@@ -231,7 +231,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                 self.avatarView.bind(user.getNameModel().get(), id: user.getId(), avatar: value)
             })
             
-            binder.bind(Actor.getTypingWithUid(peer.peerId)!, valueModel2: user.getPresenceModel()!, closure:{ (typing:JavaLangBoolean?, presence:ACUserPresence?) -> () in
+            binder.bind(Actor.getTypingWithUid(peer.peerId)!, valueModel2: user.getPresenceModel(), closure:{ (typing:JavaLangBoolean?, presence:ACUserPresence?) -> () in
                 
                 if (typing != nil && typing!.booleanValue()) {
                     self.subtitleView.text = Actor.getFormatter().formatTyping()
@@ -243,8 +243,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                     } else {
                         let stateText = Actor.getFormatter().formatPresence(presence, withSex: user.getSex())
                         self.subtitleView.text = stateText;
-                        let state = UInt(presence!.state.ordinal())
-                        if (state == ACUserPresence_State.ONLINE.rawValue) {
+                        let state = presence!.state.ordinal()
+                        if (state == ACUserPresence_State.ONLINE().ordinal()) {
                             self.subtitleView.textColor = self.appStyle.userOnlineNavigationColor
                         } else {
                             self.subtitleView.textColor = self.appStyle.userOfflineNavigationColor
@@ -252,7 +252,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                     }
                 }
             })
-        } else if (UInt(peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue) {
+        } else if (peer.peerType.ordinal() == ACPeerType.GROUP().ordinal()) {
             let group = Actor.getGroupWithGid(peer.peerId)
             let nameModel = group.getNameModel()
             
@@ -374,12 +374,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     func onAvatarTap() {
         let id = Int(peer.peerId)
         var controller: AAViewController!
-        if (UInt(peer.peerType.ordinal()) == ACPeerType.PRIVATE.rawValue) {
+        if (peer.peerType.ordinal() == ACPeerType.PRIVATE().ordinal()) {
             controller = ActorSDK.sharedActor().delegate.actorControllerForUser(id)
             if controller == nil {
                 controller = AAUserViewController(uid: id)
             }
-        } else if (UInt(peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue) {
+        } else if (peer.peerType.ordinal() == ACPeerType.GROUP().ordinal()) {
             controller = ActorSDK.sharedActor().delegate.actorControllerForGroup(id)
             if controller == nil {
                 controller = AAGroupViewController(gid: id)
@@ -502,7 +502,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     ////////////////////////////////////////////////////////////
     
     override func didChangeAutoCompletionPrefix(prefix: String!, andWord word: String!) {
-        if UInt(self.peer.peerType.ordinal()) == ACPeerType.GROUP.rawValue {
+        if self.peer.peerType.ordinal() == ACPeerType.GROUP().ordinal() {
             if prefix == "@" {
                 
                 let oldCount = filteredMembers.count
@@ -677,9 +677,15 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     ////////////////////////////////////////////////////////////
     
     func pickContact() {
-        let pickerController = ABPeoplePickerNavigationController()
-        pickerController.peoplePickerDelegate = self
-        self.presentViewController(pickerController, animated: true, completion: nil)
+        if(ABAddressBookGetAuthorizationStatus() == ABAuthorizationStatus.Authorized){
+            let pickerController = ABPeoplePickerNavigationController()
+            pickerController.peoplePickerDelegate = self
+            self.presentViewController(pickerController, animated: true, completion: nil)
+        }else{
+            let alert = UIAlertView(title: "无法访问您的通讯录", message: "请到[设置]->[隐私]->[通讯录]中允许本应用访问通讯录", delegate: nil, cancelButtonTitle: "好")
+            alert.show()
+        }
+        
     }
     
     func peoplePickerNavigationController(peoplePicker: ABPeoplePickerNavigationController, didSelectPerson person: ABRecord) {
@@ -729,9 +735,8 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
 
         // Sending
         
-        Actor.sendContactWithPeer(self.peer, withName: name, withPhones: jPhones, withEmails: jEmails, withPhoto: jAvatarImage)
+        Actor.sendContactWithPeer(self.peer, withName: name!, withPhones: jPhones, withEmails: jEmails, withPhoto: jAvatarImage)
     }
-    
     
     ////////////////////////////////////////////////////////////
     // MARK: -
@@ -755,6 +760,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     
     func onAudioRecordingFinished() {
         print("onAudioRecordingFinished\n")
+        
         audioRecorder.finish({ (path: String!, duration: NSTimeInterval) -> Void in
             
             if (nil == path) {
@@ -766,12 +772,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             let range = path.rangeOfString("/tmp", options: NSStringCompareOptions(), range: nil, locale: nil)
             let descriptor = path.substringFromIndex(range!.startIndex)
             NSLog("Audio Recording file: \(descriptor)")
-            
 
             Actor.sendAudioWithPeer(self.peer, withName: NSString.localizedStringWithFormat("%@.ogg", NSUUID().UUIDString) as String,
                 withDuration: jint(duration*1000), withDescriptor: descriptor)
             
         })
+        
     }
     
     func audioRecorderDidStartRecording() {
