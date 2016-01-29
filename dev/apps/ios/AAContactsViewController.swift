@@ -80,7 +80,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
             r.height = 56
             
             r.closure = { (cell: AAContactActionCell)->() in
-                cell.bind("ic_invite_user", actionTitle: "\(AALocalized("ContactsActionInvite"))")
+                cell.bind("ic_invite_user", actionTitle: "\(AALocalized("ContactsActionInvite")) \(ActorSDK.sharedActor().appNameInLocStrings)")
             }
             
             r.selectAction = { () -> Bool in

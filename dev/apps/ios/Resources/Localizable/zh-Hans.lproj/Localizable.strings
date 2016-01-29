@@ -22,9 +22,9 @@
 
 "ContactsAddHint" = "请输入手机号码";
 
-"ContactsActionInvite" = "邀请";
+"ContactsActionInvite" = "邀请好友使用";
 
-"ContactsActionAdd" = "添加";
+"ContactsActionAdd" = "添加好友";
 
 /*
  * Dialogs
@@ -231,9 +231,9 @@
 
 "ComposeTitle" = "新消息";
 
-"CreateGroup" = "创建群组";
+"CreateGroup" = "发起群聊";
 
-"CreateGroupTitle" = "创建群组";
+"CreateGroupTitle" = "发起群聊";
 
 "CreateGroupNamePlaceholder" = "输入群组名称";
 
@@ -333,7 +333,7 @@
  * Find
  */
 
-"FindTitle" = "查找";
+"FindTitle" = "查找好友";
 
 "FindFieldHint" = "手机号码、昵称或邮件";
 
