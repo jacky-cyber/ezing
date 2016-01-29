@@ -1,5 +1,5 @@
 //
-//  Copyright (c) 2014-2015 Actor LLC. <https://actor.im>
+//  Copyright (c) 2014-2016 Actor LLC. <https://actor.im>
 //
 
 import UIKit
@@ -12,7 +12,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
     
     var inviteText: String {
         get {
-            return AALocalized("InviteText").replace("{link}", dest: ActorSDK.sharedActor().inviteUrl)
+            return AALocalized("InviteText").replace("{link}", dest: ActorSDK.sharedActor().inviteUrl).replace("{appname}", dest: ActorSDK.sharedActor().appNameInLocStrings)
         }
     }
     
@@ -65,7 +65,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
             r.height = 56
             
             r.closure = { (cell: AAContactActionCell)->() in
-                cell.bind("ic_invite_user", actionTitle: AALocalized("ContactsActionInvite"))
+                cell.bind("ic_invite_user", actionTitle: "\(AALocalized("ContactsActionInvite"))")
             }
             
             r.selectAction = { () -> Bool in
@@ -73,19 +73,19 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                 let builder = AAMenuBuilder()
                 
                 if MFMessageComposeViewController.canSendText() {
-                    builder.add("短信") { () -> () in
+                    builder.add("SMS") { () -> () in
                         self.showSmsInvitation(nil)
                     }
                 }
                 
                 if MFMailComposeViewController.canSendMail() {
-                    builder.add("邮件") { () -> () in
+                    builder.add("Email") { () -> () in
                         self.showEmailInvitation(nil)
                     }    
                 }
                 
                 if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTencentWeibo) {
-                    builder.add("腾讯微博") { () -> () in
+                    builder.add("Tencent Weibo") { () -> () in
                         let vc = SLComposeViewController(forServiceType: SLServiceTypeTencentWeibo)
                         vc.setInitialText(self.inviteText)
                         self.presentViewController(vc, animated: true, completion: nil)
@@ -93,14 +93,14 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                 }
                 
                 if SLComposeViewController.isAvailableForServiceType(SLServiceTypeSinaWeibo) {
-                    builder.add("新浪微博") { () -> () in
+                    builder.add("Sina Weibo") { () -> () in
                         let vc = SLComposeViewController(forServiceType: SLServiceTypeSinaWeibo)
                         vc.setInitialText(self.inviteText)
                         self.presentViewController(vc, animated: true, completion: nil)
                     }
                 }
                 
-                /*if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
                     builder.add("Twitter") { () -> () in
                         let vc = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
                         vc.setInitialText(self.inviteText)
@@ -114,7 +114,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                         vc.addURL(NSURL(string: ActorSDK.sharedActor().inviteUrl))
                         self.presentViewController(vc, animated: true, completion: nil)
                     }
-                }*/
+                }
                 
                 let view = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 0))!.contentView
                 
@@ -157,7 +157,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                     }
                     
                     if user != nil {
-                        c.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> Void in
+                        c.execute(Actor.addContactCommandWithUid(user!.getId())!, successBlock: { (val) -> Void in
                             self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
                             c.dismiss()
                         }, failureBlock: { (val) -> Void in
@@ -189,7 +189,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                         }
                     }
                     if user != nil {
-                        self.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> () in
+                        self.execute(Actor.addContactCommandWithUid(user!.getId())!, successBlock: { (val) -> () in
                                 self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
                             }, failureBlock: { (val) -> () in
                                 self.showSmsInvitation([textField.text!])
