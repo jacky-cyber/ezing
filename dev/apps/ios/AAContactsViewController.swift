@@ -46,7 +46,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
     
     func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
         
-        section.custom { (r: AACustomRow<AAContactActionCell>) -> () in
+        /*section.custom { (r: AACustomRow<AAContactActionCell>) -> () in
             
             r.height = 56
             
@@ -57,6 +57,21 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
             r.selectAction = { () -> Bool in
                 self.findContact()
                 return AADevice.isiPad
+            }
+        }*/
+        
+        section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
+            
+            r.height = 56
+            
+            r.closure = { (cell) -> () in
+                cell.bind("ic_add_user", actionTitle: AALocalized("CreateGroup"))
+            }
+            
+            r.selectAction = { () -> Bool in
+                //self.navigateNext(AAGroupCreateViewController(), removeCurrent: true)
+                self.navigateDetail(AAGroupCreateViewController())
+                return false
             }
         }
         
