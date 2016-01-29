@@ -22,9 +22,9 @@
 
 "ContactsAddHint" = "请输入手机号码";
 
-"ContactsActionInvite" = "邀请好友";
+"ContactsActionInvite" = "邀请";
 
-"ContactsActionAdd" = "添加好友";
+"ContactsActionAdd" = "添加";
 
 /*
  * Dialogs
@@ -87,13 +87,11 @@
 
 "SettingsLastSeenEverybody" = "所有人可见最后上线信息";
 
-
-"SettingsLastSeenEverybody" = "所有人可见最后上线信息";
-
 "SettingsLastSeenContacts" = "仅好友可见最后上线信息";
 
 "SettingsLastSeenNone" = "隐藏最后上线信息";
 
+"SettingsLastSeenHint" = "设置最后上线信息可见对象或者隐藏最后上线信息";
 
 "SettingsMobilePhone"    = "手机";
 
@@ -431,7 +429,7 @@
 
 "CurrentLocale" = "Cn";
 
-"InviteText" = "您好！让我们一起使用{appname}安全开聊吧! {link}";
+"InviteText" = "免费、快速、安全的移动门户及即时通讯：{link}";
 
 "PhotoRemove" = "删除头像";
 
@@ -445,7 +443,7 @@
 
 "ShareLocation" = "位置";
 
-"ShareContact" = "联系";
+"ShareContact" = "个人名片";
 
 /*
  *  Navigation
@@ -463,7 +461,7 @@
 
 "NavigationSave" = "保存";
 
-"NavigationFind" = "发现";
+"NavigationFind" = "查找";
 
 /*
  *  Alerts
@@ -475,7 +473,7 @@
 
 "AlertSave" = "保存";
 
-"AlertSet" = "Set";
+"AlertSet" = "设置";
 
 "AlertOk" = "确定";
 
@@ -497,7 +495,7 @@
 
 "ActionCopyLink" = "复制链接";
 
-"ActionRevokeLink" = "废除链接";
+"ActionRevokeLink" = "重置链接";
 
 "ActionShareLink" = "分享链接";
 
