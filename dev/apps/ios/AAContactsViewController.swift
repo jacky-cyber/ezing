@@ -73,34 +73,34 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                 let builder = AAMenuBuilder()
                 
                 if MFMessageComposeViewController.canSendText() {
-                    builder.add("SMS") { () -> () in
+                    builder.add("短信") { () -> () in
                         self.showSmsInvitation(nil)
                     }
                 }
                 
                 if MFMailComposeViewController.canSendMail() {
-                    builder.add("Email") { () -> () in
+                    builder.add("邮件") { () -> () in
                         self.showEmailInvitation(nil)
                     }    
                 }
                 
-                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTencentWeibo) {
+                /*if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTencentWeibo) {
                     builder.add("Tencent Weibo") { () -> () in
                         let vc = SLComposeViewController(forServiceType: SLServiceTypeTencentWeibo)
                         vc.setInitialText(self.inviteText)
                         self.presentViewController(vc, animated: true, completion: nil)
                     }
-                }
+                }*/
                 
                 if SLComposeViewController.isAvailableForServiceType(SLServiceTypeSinaWeibo) {
-                    builder.add("Sina Weibo") { () -> () in
+                    builder.add("微博") { () -> () in
                         let vc = SLComposeViewController(forServiceType: SLServiceTypeSinaWeibo)
                         vc.setInitialText(self.inviteText)
                         self.presentViewController(vc, animated: true, completion: nil)
                     }
                 }
                 
-                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
+                /*if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
                     builder.add("Twitter") { () -> () in
                         let vc = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
                         vc.setInitialText(self.inviteText)
@@ -114,7 +114,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                         vc.addURL(NSURL(string: ActorSDK.sharedActor().inviteUrl))
                         self.presentViewController(vc, animated: true, completion: nil)
                     }
-                }
+                }*/
                 
                 let view = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 0))!.contentView
                 
