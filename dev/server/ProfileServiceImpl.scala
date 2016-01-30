@@ -9,7 +9,7 @@ import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.server.db.DbExtension
 import im.actor.server.file.{ FileStorageExtension, FileErrors, FileStorageAdapter, ImageUtils }
-import im.actor.server.persist
+import im.actor.server.persist.UserRepo
 import im.actor.server.sequence.{ SequenceErrors, SeqState }
 import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.user._
@@ -23,11 +23,11 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 object ProfileErrors {
   val NicknameInvalid = RpcError(400, "NICKNAME_INVALID",
-    "Invalid nickname. Valid nickname should contain from 5 to 32 characters, and may consist of latin characters, numbers and underscores", false, None)
-  val NameInvalid = RpcError(400, "NAME_INVALID", "Invalid name. Valid name should not be empty or contain bad symbols", false, None)
-  val NicknameBusy = RpcError(400, "NICKNAME_BUSY", "This nickname already belongs some other user, we are sorry!", false, None)
+    "昵称不符合规则，昵称应该由英文字母（a-z）、数字、下划线（_）组成，最少5个字，最多32个字。", false, None)
+  val NameInvalid = RpcError(400, "NAME_INVALID", "姓名不能为空，或包含非法字符。", false, None)
+  val NicknameBusy = RpcError(400, "NICKNAME_BUSY", "此昵称已经被其他人使用，请选择其他昵称。", false, None)
   val AboutTooLong = RpcError(400, "ABOUT_TOO_LONG",
-    "About is too long. It should be no longer then 255 characters", false, None)
+    "个性签名不能超过255个字。", false, None)
 }
 
 final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileService {
@@ -103,7 +103,7 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
     authorized(clientData) { implicit client ⇒
       (for {
         _ ← fromBoolean(ProfileErrors.NicknameInvalid)(StringUtils.validUsername(nickname))
-        exists ← fromFuture(db.run(persist.UserRepo.nicknameExists(nickname.trim)))
+        exists ← fromFuture(db.run(UserRepo.nicknameExists(nickname.trim)))
       } yield ResponseBool(!exists)).run
     }
   }
