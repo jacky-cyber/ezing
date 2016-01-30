@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 import Haneke
+import MBProgressHUD
+import TOWebViewController
+import JDStatusBarNotification
 
 public class HomeViewController: UITableViewController{
     
@@ -21,10 +24,10 @@ public class HomeViewController: UITableViewController{
     }
     
     //public init() {
-        //super.init(style: AAContentTableStyle.SettingsPlain)
-        
-        //tabBarItem = UITabBarItem(title: "TabDiscover", img: "TabIconDiscover", selImage: "TabIconDiscoverHighlighted")
-        //navigationItem.title = "易致"
+    //super.init(style: AAContentTableStyle.SettingsPlain)
+    
+    //tabBarItem = UITabBarItem(title: "TabDiscover", img: "TabIconDiscover", selImage: "TabIconDiscoverHighlighted")
+    //navigationItem.title = "易致"
     //}
     public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -49,7 +52,7 @@ public class HomeViewController: UITableViewController{
         //self.view?.addSubview(self.tableView!)
         
         /*let cache = Cache<JSON>(name: "bots_latest")
-        let URL = NSURL(string: "https://app.ezing.cn/bots/bots/")!
+        let URL = NSURL(string: "https://app.ezing.cn/bots/jlartbots/")!
         var error:NSError?
         let isReachable = URL.checkResourceIsReachableAndReturnError(&error)
         if(isReachable){
@@ -64,6 +67,16 @@ public class HomeViewController: UITableViewController{
     
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        /*let window = UIApplication.sharedApplication().windows[1]
+        let hud = MBProgressHUD(window: window)
+        hud.mode = MBProgressHUDMode.Indeterminate
+        hud.removeFromSuperViewOnHide = true
+        window.addSubview(hud)
+        window.bringSubviewToFront(hud)
+        hud.show(true)*/
+        
+        JDStatusBarNotification.showWithStatus(AALocalized("StatusSyncing"))
+        
         let cache = Cache<JSON>(name: "bots_latest")
         let URL = NSURL(string: "https://app.ezing.cn/bots/bots/")!
         var error:NSError?
@@ -72,9 +85,14 @@ public class HomeViewController: UITableViewController{
             cache.removeAll()
         }
         cache.fetch(URL: URL).onSuccess { JSON in
+            //hud?.hide(true)
+            JDStatusBarNotification.dismiss()
             self.bots = JSON.dictionary?["bots"] as? NSArray;
             self.tableView?.reloadData()
-        }
+            }.onFailure { failure in
+                //hud?.hide(true)
+                JDStatusBarNotification.dismiss()
+            }
     }
     
     public override func tableView(tableView:UITableView, numberOfRowsInSection section:Int) -> Int
@@ -86,50 +104,71 @@ public class HomeViewController: UITableViewController{
     {
         let cell = UITableViewCell(style: UITableViewCellStyle.Subtitle,reuseIdentifier: "cell")
         let bot = self.bots?[indexPath.row] as! NSDictionary;
-    
+        
         let name = bot["name"] as! NSString
         cell.textLabel!.text = name as String
         
         let desc = bot["desc"] as! NSString
         cell.detailTextLabel!.text = desc as String
         cell.detailTextLabel?.numberOfLines = 0
-    
+        
         cell.detailTextLabel!.textColor = UIColor.darkGrayColor()
         
         let labeltext = cell.textLabel!.text as NSString?
         let title = labeltext!.substringToIndex(1)
         cell.imageView?.image = Placeholders.avatarPlaceholder(jint(indexPath.row),size: 44, title:title, rounded: true)
-
+        
         return cell
     }
     
     public override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let bot = self.bots?[indexPath.row] as! NSDictionary;
         
-        let nickname = bot["nickname"] as! NSString as String
-        
-        self.executeSafeOnlySuccess(Actor.findUsersCommandWithQuery(nickname), successBlock: { (val) -> Void in
-            var user: ACUserVM? = nil
-            if let users = val as? IOSObjectArray {
-                if Int(users.length()) > 0 {
-                    if let tempUser = users.objectAtIndex(0) as? ACUserVM {
-                        user = tempUser
+        let url = bot["url"]
+        if url != nil {
+            let urlString = bot["url"] as! NSString as String
+            /*webVC.loadURLWithString(urlString)
+            self.navigateNext(webVC)
+            webVC.toolbar.toolbarTintColor = UIColor.darkGrayColor()
+            webVC.toolbar.toolbarBackgroundColor = UIColor.whiteColor()
+            webVC.toolbar.toolbarTranslucent = false
+            webVC.allowsBackForwardNavigationGestures = true
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW,Int64(1 * Double(NSEC_PER_SEC))),dispatch_get_main_queue(), {
+            self.webVC.showToolbar(true, animated: true)
+            })*/
+            
+            let browser = TOWebViewController(URLString: urlString)
+            browser.showUrlWhileLoading = false
+            self.navigateDetail(browser)
+            
+        }else{
+            let nickname = bot["nickname"] as! NSString as String
+            
+            self.executeSafeOnlySuccess(Actor.findUsersCommandWithQuery(nickname), successBlock: { (val) -> Void in
+                var user: ACUserVM? = nil
+                if let users = val as? IOSObjectArray {
+                    if Int(users.length()) > 0 {
+                        if let tempUser = users.objectAtIndex(0) as? ACUserVM {
+                            user = tempUser
+                        }
                     }
                 }
-            }
-            
-            if user != nil {
-                self.execute(Actor.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> Void in
-                    self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
-                    //self.dismiss()
-                    }, failureBlock: { (val) -> Void in
-                        self.navigateNext(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                
+                if user != nil {
+                    self.execute(Actor.addContactCommandWithUid(user!.getId())!, successBlock: { (val) -> Void in
+                        self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
                         //self.dismiss()
-                })
-            } else {
-                self.alertUser("FindNotFound")
-            }
-        })
-
+                        }, failureBlock: { (val) -> Void in
+                            self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            //self.dismiss()
+                    })
+                } else {
+                    self.alertUser("FindNotFound")
+                }
+            })
+            
+        }
+        
     }
 }
