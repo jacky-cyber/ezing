@@ -219,6 +219,7 @@ class AAConvActionSheet: UIView {
         self.btnLocation.setTitle(AALocalized("ShareLocation"), forState: UIControlState.Normal)
         self.btnContact.setTitle(AALocalized("ShareContact"), forState: UIControlState.Normal)
         self.btnCancel.setTitle(AALocalized("AlertCancel"), forState: UIControlState.Normal)
+        self.btnCancel.backgroundColor = UIColor(rgb: 0xecf0f1)
         
         // add actins
         
