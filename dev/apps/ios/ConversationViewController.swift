@@ -101,7 +101,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.stickersButton.frame = CGRectMake(self.view.frame.size.width-67, 12, 20, 20)
         self.stickersButton.addTarget(self, action: "changeKeyboard", forControlEvents: UIControlEvents.TouchUpInside)
         
-        self.textInputbar.addSubview(stickersButton)
+        //self.textInputbar.addSubview(stickersButton)
         
         // Check text for set right button
         let checkText = Actor.loadDraftWithPeer(peer)!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())

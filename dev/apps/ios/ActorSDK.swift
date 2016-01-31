@@ -64,7 +64,7 @@ public class ActorSDK {
     public var autoPushMode = AAAutoPush.AfterLogin
     
     /// Push token registration id. Required for sending push tokens
-    public var apiPushId: Int? = 102
+    public var apiPushId: Int? = 2
     
     /// Enable phone book import
     public var enablePhoneBookImport = true
@@ -73,22 +73,22 @@ public class ActorSDK {
     public var inviteUrl: String = "https://app.ezing.cn"
     
     /// App name in loc. strings
-    public var appNameInLocStrings: String = "吉林艺术学院"
+    public var appNameInLocStrings: String = "易致"
     
     /// Use background on welcome screen
     public var useBackgroundOnWelcomeScreen: Bool? = false
     
     /// Support email
-    public var supportEmail: String? = "support@ezingsoft.com"
+    public var supportEmail: String? = nil
     
     /// Support email
-    public var supportActivationEmail: String? = "support@ezingsoft.com"
+    public var supportActivationEmail: String? = nil
     
     /// Support account
     public var supportAccount: String? = nil
     
     /// Support home page
-    public var supportHomepage: String? = "https://app.ezing.cn/jlart/"
+    public var supportHomepage: String? = "https://app.ezing.cn"
 
     /// Support account
     public var supportTwitter: String? = nil
@@ -168,8 +168,8 @@ public class ActorSDK {
         builder.setNotificationProvider(iOSNotificationProvider())
         
         // Stats
-        builder.setPlatformType(ACPlatformTypeEnum.values().objectAtIndex(ACPlatformType.IOS.rawValue) as! ACPlatformTypeEnum)
-        builder.setDeviceCategory(ACDeviceCategoryEnum.values().objectAtIndex(ACDeviceCategory.MOBILE.rawValue) as! ACDeviceCategoryEnum)
+        builder.setPlatformType(ACPlatformType.IOS())
+        builder.setDeviceCategory(ACDeviceCategory.MOBILE())
         
         // Locale
         for lang in NSLocale.preferredLanguages() {
@@ -273,13 +273,9 @@ public class ActorSDK {
         }
         if controller == nil {
             let tab = AARootTabViewController()
-            tab.viewControllers = [
-                AANavigationController(rootViewController: HomeViewController()),
-                AANavigationController(rootViewController: AARecentViewController()),
-                AANavigationController(rootViewController: AAContactsViewController()),
-                AANavigationController(rootViewController: AASettingsViewController())]
+            
+            tab.viewControllers = self.getMainNavigations()
             tab.selectedIndex = 0
-            tab.selectedIndex = 2
             tab.selectedIndex = 1
             
             if (AADevice.isiPad) {
@@ -315,6 +311,51 @@ public class ActorSDK {
         UIApplication.sharedApplication().registerUserNotificationSettings(settings)
         UIApplication.sharedApplication().registerForRemoteNotifications()
     }
+    
+    /// Get main navigations with check in delegate for customize from SDK
+    
+    private func getMainNavigations() -> [AANavigationController] {
+    
+        
+        var mainNavigations = [AANavigationController]()
+        
+        mainNavigations.append(AANavigationController(rootViewController: HomeViewController()))
+        
+        ////////////////////////////////////
+        // recent dialogs
+        ////////////////////////////////////
+        
+        if let recentDialogs = self.delegate.actorControllerForDialogs() {
+            mainNavigations.append(AANavigationController(rootViewController: recentDialogs))
+        } else {
+            mainNavigations.append(AANavigationController(rootViewController: AARecentViewController()))
+        }
+        
+        
+        ////////////////////////////////////
+        // contacts
+        ////////////////////////////////////
+        
+        if let contactsController = self.delegate.actorControllerForContacts() {
+            mainNavigations.append(AANavigationController(rootViewController: contactsController))
+        } else {
+            mainNavigations.append(AANavigationController(rootViewController: AAContactsViewController()))
+        }
+        
+        ////////////////////////////////////
+        // settings
+        ////////////////////////////////////
+        
+        if let settingsController = self.delegate.actorControllerForSettings() {
+            mainNavigations.append(AANavigationController(rootViewController: settingsController))
+        } else {
+            mainNavigations.append(AANavigationController(rootViewController: AASettingsViewController()))
+        }
+        
+    
+        return mainNavigations;
+        
+    }
 
     
     //
@@ -337,13 +378,8 @@ public class ActorSDK {
             var controller: UIViewController! = delegate.actorControllerForStart()
             if controller == nil {
                 let tab = AARootTabViewController()
-                tab.viewControllers = [
-                    AANavigationController(rootViewController: HomeViewController()),
-                    AANavigationController(rootViewController: AARecentViewController()),
-                    AANavigationController(rootViewController: AAContactsViewController()),
-                    AANavigationController(rootViewController: AASettingsViewController())]
+                tab.viewControllers = self.getMainNavigations()
                 tab.selectedIndex = 0
-                tab.selectedIndex = 2
                 tab.selectedIndex = 1
                 
                 if (AADevice.isiPad) {
@@ -358,8 +394,8 @@ public class ActorSDK {
         } else {
             var controller: UIViewController! = delegate.actorControllerForAuthStart()
             if controller == nil {
-                controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
-                //controller = AAAuthNavigationController(rootViewController: AAWelcomeController())
+                //controller = AAAuthNavigationController(rootViewController: AAAuthPhoneViewController())
+                controller = AAAuthNavigationController(rootViewController: AAWelcomeController())
             }
             window.rootViewController = controller!
         }
@@ -439,6 +475,7 @@ public class ActorSDK {
             }
             
             UIApplication.sharedApplication().openURL(u)
+            
         }
     }
     
@@ -448,7 +485,7 @@ public class ActorSDK {
             let alert = UIAlertController(title: nil, message: AALocalized("GroupJoinMessage"), preferredStyle: .Alert)
             alert.addAction(UIAlertAction(title: AALocalized("AlertNo"), style: .Cancel, handler: nil))
             alert.addAction(UIAlertAction(title: AALocalized("GroupJoinAction"), style: .Default){ (action) -> Void in
-                AAExecutions.execute(Actor.joinGroupViaLinkCommandWithUrl(token), type: .Safe, ignore: [], successBlock: { (val) -> Void in
+                AAExecutions.execute(Actor.joinGroupViaLinkCommandWithUrl(token)!, type: .Safe, ignore: [], successBlock: { (val) -> Void in
                     
                     // TODO: Fix for iPad
                     let groupId = val as! JavaLangInteger
