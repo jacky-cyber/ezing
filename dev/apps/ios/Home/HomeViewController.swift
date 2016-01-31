@@ -14,7 +14,7 @@ import TOWebViewController
 import JDStatusBarNotification
 
 public class HomeViewController: UITableViewController{
-    
+    let botsurl = "https://app.ezing.cn/bots/bots/"
     //var tableView :UITableView?
     var bots:NSArray? = []
     public  init() {
@@ -43,56 +43,45 @@ public class HomeViewController: UITableViewController{
         
         navigationItem.title = "易致"
         
-        //self.tableView = UITableView(frame:view.bounds)
-        //self.tableView!.delegate = self
-        //self.tableView!.dataSource = self
-        //self.tableView!.registerClass(UITableViewCell.self, forCellReuseIdentifier:"cell")
         self.tableView!.rowHeight = 66
         
-        //self.view?.addSubview(self.tableView!)
-        
-        /*let cache = Cache<JSON>(name: "bots_latest")
-        let URL = NSURL(string: "https://app.ezing.cn/bots/jlartbots/")!
+        JDStatusBarNotification.showWithStatus(AALocalized("StatusSyncing"))
+        let cache = Cache<JSON>(name: "bots_latest")
+        let URL = NSURL(string: botsurl)!
         var error:NSError?
         let isReachable = URL.checkResourceIsReachableAndReturnError(&error)
         if(isReachable){
             cache.removeAll()
         }
-        cache.fetch(URL: URL).onSuccess { JSON in
+        cache.synfetch(URL: URL).onSuccess { JSON in
+            JDStatusBarNotification.dismiss()
             self.bots = JSON.dictionary?["bots"] as? NSArray;
             self.tableView?.reloadData()
-        }*/
+            }.onFailure { failure in
+                JDStatusBarNotification.dismiss()
+        }
         
     }
     
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        /*let window = UIApplication.sharedApplication().windows[1]
-        let hud = MBProgressHUD(window: window)
-        hud.mode = MBProgressHUDMode.Indeterminate
-        hud.removeFromSuperViewOnHide = true
-        window.addSubview(hud)
-        window.bringSubviewToFront(hud)
-        hud.show(true)*/
         
         JDStatusBarNotification.showWithStatus(AALocalized("StatusSyncing"))
         
         let cache = Cache<JSON>(name: "bots_latest")
-        let URL = NSURL(string: "https://app.ezing.cn/bots/bots/")!
+        let URL = NSURL(string: botsurl)!
         var error:NSError?
         let isReachable = URL.checkResourceIsReachableAndReturnError(&error)
         if(isReachable){
             cache.removeAll()
         }
         cache.fetch(URL: URL).onSuccess { JSON in
-            //hud?.hide(true)
             JDStatusBarNotification.dismiss()
             self.bots = JSON.dictionary?["bots"] as? NSArray;
             self.tableView?.reloadData()
             }.onFailure { failure in
-                //hud?.hide(true)
-                JDStatusBarNotification.dismiss()
-            }
+            JDStatusBarNotification.dismiss()
+        }
     }
     
     public override func tableView(tableView:UITableView, numberOfRowsInSection section:Int) -> Int
