@@ -18,3 +18,4 @@ Allow Arbitrary Loads
     </dict>
 
 
+rm -fr ~/Library/Developer/Xcode/DerivedData
