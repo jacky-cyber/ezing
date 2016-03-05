@@ -2,7 +2,6 @@ package im.actor.server.api.rpc.service.profile
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import im.actor.api.rpc.FutureResultRpc._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.ApiFileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
@@ -21,10 +20,10 @@ import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
-object ProfileErrors {
+object ProfileRpcErrors {
   val NicknameInvalid = RpcError(400, "NICKNAME_INVALID",
     "昵称不符合规则，昵称应该由英文字母（a-z）、数字、下划线（_）组成，最少5个字，最多32个字。", false, None)
-  val NameInvalid = RpcError(400, "NAME_INVALID", "姓名不能为空，或包含非法字符。", false, None)
+  val NameInvalid = RpcError(400, "NAME_INVALID", "姓名不能为空或包含非法字符。", false, None)
   val NicknameBusy = RpcError(400, "NICKNAME_BUSY", "此昵称已经被其他人使用，请选择其他昵称。", false, None)
   val AboutTooLong = RpcError(400, "ABOUT_TOO_LONG",
     "个性签名不能超过255个字。", false, None)
@@ -35,6 +34,8 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   import FileHelpers._
   import ImageUtils._
 
+  import FutureResultRpc._
+
   override implicit val ec: ExecutionContext = system.dispatcher
 
   private implicit val timeout = Timeout(5.seconds)
@@ -44,11 +45,10 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
   private implicit val socialRegion: SocialManagerRegion = SocialExtension(system).region
   private implicit val fsAdapter: FileStorageAdapter = FileStorageExtension(system).fsAdapter
 
-  override def jhandleEditAvatar(fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] = {
-    // TODO: flatten
-
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withFileLocation(fileLocation, AvatarSizeLimit) {
+  // TODO: flatten
+  override def doHandleEditAvatar(fileLocation: ApiFileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] =
+    authorized(clientData) { implicit client ⇒
+      val action = withFileLocation(fileLocation, AvatarSizeLimit) {
         scaleAvatar(fileLocation.fileId, ThreadLocalSecureRandom.current()) flatMap {
           case Right(avatar) ⇒
             for {
@@ -62,77 +62,69 @@ final class ProfileServiceImpl()(implicit system: ActorSystem) extends ProfileSe
             throw FileErrors.LocationInvalid
         }
       }
+      db.run(action)
     }
 
-    db.run(toDBIOAction(authorizedAction)) recover {
-      case FileErrors.LocationInvalid ⇒ Error(Errors.LocationInvalid)
-    }
-  }
-
-  override def jhandleRemoveAvatar(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      for {
+  override def doHandleRemoveAvatar(clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+    authorized(clientData) { implicit client ⇒
+      val action = for {
         UserCommands.UpdateAvatarAck(_, SeqState(seq, state)) ← DBIO.from(userExt.updateAvatar(client.userId, None))
       } yield Ok(ResponseSeq(seq, state.toByteArray))
+      db.run(action)
     }
 
-    db.run(toDBIOAction(authorizedAction))
-  }
-
-  override def jhandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
+  override def doHandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       for {
         SeqState(seq, state) ← userExt.changeName(client.userId, name)
       } yield Ok(ResponseSeq(seq, state.toByteArray))
-    } recover {
-      case UserErrors.InvalidName ⇒ Error(ProfileErrors.NameInvalid)
     }
 
-  def jhandleEditNickName(nickname: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleEditNickName(nickname: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       for {
         SeqState(seq, state) ← userExt.changeNickname(client.userId, nickname)
       } yield Ok(ResponseSeq(seq, state.toByteArray))
-    } recover {
-      case UserErrors.NicknameTaken   ⇒ Error(ProfileErrors.NicknameBusy)
-      case UserErrors.InvalidNickname ⇒ Error(ProfileErrors.NicknameInvalid)
     }
-  }
 
-  def jhandleCheckNickName(nickname: String, clientData: ClientData): Future[HandlerResult[ResponseBool]] = {
+  override def doHandleCheckNickName(nickname: String, clientData: ClientData): Future[HandlerResult[ResponseBool]] =
     authorized(clientData) { implicit client ⇒
       (for {
-        _ ← fromBoolean(ProfileErrors.NicknameInvalid)(StringUtils.validUsername(nickname))
+        _ ← fromBoolean(ProfileRpcErrors.NicknameInvalid)(StringUtils.validUsername(nickname))
         exists ← fromFuture(db.run(UserRepo.nicknameExists(nickname.trim)))
-      } yield ResponseBool(!exists)).run
+      } yield ResponseBool(!exists)).value
     }
-  }
 
   //todo: move validation inside of UserOffice
-  def jhandleEditAbout(about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleEditAbout(about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     authorized(clientData) { implicit client ⇒
       (for {
         trimmed ← point(about.map(_.trim))
-        _ ← fromBoolean(ProfileErrors.AboutTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
-        SeqState(seq, state) ← fromFuture(userExt.changeAbout(client.userId, trimmed))
-      } yield ResponseSeq(seq, state.toByteArray)).run
+        _ ← fromBoolean(ProfileRpcErrors.AboutTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
+        s ← fromFuture(userExt.changeAbout(client.userId, trimmed))
+      } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
   }
 
-  override def jhandleEditMyTimeZone(tz: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleEditMyTimeZone(tz: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       (for {
-        SeqState(seq, state) ← fromFuture(produceError)(userExt.changeTimeZone(client.userId, tz))
-      } yield ResponseSeq(seq, state.toByteArray)).run
+        s ← fromFuture(produceError)(userExt.changeTimeZone(client.userId, tz))
+      } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
-  }
 
-  override def jhandleEditMyPreferredLanguages(preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def doHandleEditMyPreferredLanguages(preferredLanguages: IndexedSeq[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] =
     authorized(clientData) { implicit client ⇒
       (for {
-        SeqState(seq, state) ← fromFuture(produceError)(userExt.changePreferredLanguages(client.userId, preferredLanguages))
-      } yield ResponseSeq(seq, state.toByteArray)).run
+        s ← fromFuture(produceError)(userExt.changePreferredLanguages(client.userId, preferredLanguages))
+      } yield ResponseSeq(s.seq, s.state.toByteArray)).value
     }
+
+  override def onFailure: PartialFunction[Throwable, RpcError] = {
+    case FileErrors.LocationInvalid ⇒ FileRpcErrors.LocationInvalid
+    case UserErrors.InvalidName     ⇒ ProfileRpcErrors.NameInvalid
+    case UserErrors.NicknameTaken   ⇒ ProfileRpcErrors.NicknameBusy
+    case UserErrors.InvalidNickname ⇒ ProfileRpcErrors.NicknameInvalid
   }
 
   private def produceError = PartialFunction[Throwable, RpcError] {

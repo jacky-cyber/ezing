@@ -17,5 +17,7 @@ Allow Arbitrary Loads
         <true/>
     </dict>
 
+public var appNameInLocStrings: String = "江海证券"
+
 
 rm -fr ~/Library/Developer/Xcode/DerivedData
