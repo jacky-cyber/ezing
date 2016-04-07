@@ -30,7 +30,6 @@ import im.actor.core.entity.content.ServiceGroupUserKicked;
 import im.actor.core.entity.content.ServiceGroupUserLeave;
 import im.actor.core.entity.content.ServiceUserRegistered;
 import im.actor.core.entity.content.TextContent;
-import im.actor.core.modules.Errors;
 import im.actor.core.modules.Modules;
 import im.actor.core.network.RpcException;
 import im.actor.core.util.JavaUtil;
@@ -43,7 +42,7 @@ public class I18nEngine {
 
     private static final String TAG = "I18nEngine";
 
-    private static final String[] SUPPORTED_LOCALES = new String[]{"Ru", "Ar", "Zn", "Pt", "Es"};
+    private static final String[] SUPPORTED_LOCALES = new String[]{"Ru", "Ar", "Zn", "Pt", "Es", "Fa"};
 
     private final Modules modules;
     private final LocaleRuntime runtime;
@@ -363,13 +362,16 @@ public class I18nEngine {
             case LOCATION:
                 return locale.get("Location");
             case STICKER:
-                return locale.get("Sticker");
-            case CUSTOM_JSON_MESSAGE:
-                return text;
+                if (text != null && !"".equals(text)) {
+                    return text + " " + locale.get("Sticker");
+                } else {
+                    return locale.get("Sticker");
+                }
             case SERVICE:
                 return text;// Should be service message
             case SERVICE_REGISTERED:
-                return getTemplateNamed(senderId, "ServiceRegistered");
+                return getTemplateNamed(senderId, "ServiceRegistered")
+                        .replace("{app_name}", getApplicationName());
             case SERVICE_CREATED:
                 return getTemplateNamed(senderId, "ServiceGroupCreated");
             case SERVICE_ADD:
@@ -422,7 +424,8 @@ public class I18nEngine {
     @ObjectiveCName("formatFullServiceMessageWithSenderId:withContent:")
     public String formatFullServiceMessage(int senderId, ServiceContent content) {
         if (content instanceof ServiceUserRegistered) {
-            return getTemplateNamed(senderId, "ServiceRegisteredFull");
+            return getTemplateNamed(senderId, "ServiceRegisteredFull")
+                    .replace("{app_name}", getApplicationName());
         } else if (content instanceof ServiceGroupCreated) {
             return getTemplateNamed(senderId, "ServiceGroupCreatedFull");
         } else if (content instanceof ServiceGroupUserInvited) {
@@ -496,7 +499,8 @@ public class I18nEngine {
         if (uid == modules.getAuthModule().myUid()) {
             return locale.get("Thee");
         } else {
-            return getUser(uid).getName();
+            User user = getUser(uid);
+            return user != null ? user.getName() : "";
         }
     }
 
@@ -551,8 +555,15 @@ public class I18nEngine {
     }
 
     private String getTemplateNamed(int senderId, String baseString) {
-        return getTemplate(senderId, baseString).replace("{name}",
+        String newString = getTemplate(senderId, baseString).replace("{name}",
                 formatPerformerName(senderId));
+
+        // verb for 'you' in persian language continues with suffix
+        if (runtime.getCurrentLocale().equals("Fa")) {
+            if (senderId == modules.getAuthModule().myUid())
+                newString = (newString + locale.get("YouSuffixVerb")).replace("\r", "");
+        }
+        return newString;
     }
 
     private String getTemplate(int senderId, String baseString) {
