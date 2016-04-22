@@ -30,7 +30,7 @@
  * Dialogs
  */
 
-"DialogsHint" = "";
+"DialogsHint" = "向左滑动查看更多选项";
 
 /*
  * Settings
@@ -38,31 +38,26 @@
 
 "SettingsEdit" = "编辑";
 
+
 "SettingsSetPhoto" = "设置头像";
 
 "SettingsChangeName" = "修改姓名";
 
 
-"SettingsEditHeader" = "姓名";
+"SettingsUsernameNotSet" = "设置用户名";
 
-"SettingsEditHint" = "请输入您的真实姓名，以便于好友识别。";
+"SettingsUsernameTitle" = "用户名";
 
-"SettingsEditFieldHint" = "请输入姓名";
+"SettingsUsernameHintField" = "输入用户名";
+
+"SettingsUsernameHint" = "你可以设置{appname}的用户名, 以便于其他人不知道你的电话号码也可以直接联系你.\n\n你可以用 a-z, 0-9 和下划线. 至少 5 个字符.";
 
 
-"SettingsAboutNotSet" = "设置个性签名";
+"SettingsAboutNotSet" = "填写自我介绍";
 
-"SettingsUsernameNotSet" = "设置昵称";
+"SettingsChangeAboutTitle" = "自我介绍";
 
-"SettingsUsernameTitle" = "昵称";
-
-"SettingsUsernameHintField" = "请输入昵称";
-
-"SettingsUsernameHint" = "设置昵称后，其他人可以通过昵称找到你。\n\n昵称可以由a-z、0-9及下划线组成，最少5个字。";
-
-"SettingsChangeAboutTitle" = "个性签名";
-
-"SettingsChangeAboutHint" = "请输入个性签名";
+"SettingsChangeAboutHint" = "简单介绍一下你自己";
 
 
 "SettingsSecurity" = "安全";
@@ -74,26 +69,60 @@
 
 "SettingsAskQuestion" = "提问";
 
-"SettingsTwitter" = "微博";
+"SettingsTwitter" = "推特帐号";
 
-"SettingsAbout" = "关于...";
+"SettingsAbout" = "网站";
 
 "SettingsVersion" = "版本 {version}";
 
 
-"SettingsAllSessions" = "登录设备管理";
+"SettingsAllSessions" = "所有会话";
 
-"SettingsLastSeen" = "最后上线信息显示";
+"SettingsLastSeen" = "最后一次露面";
 
-"SettingsLastSeenEverybody" = "所有人可见最后上线信息";
+"SettingsLastSeenHint" = "更改谁可以看到您最后一次露面时间。";
 
-"SettingsLastSeenContacts" = "仅好友可见最后上线信息";
 
-"SettingsLastSeenNone" = "隐藏最后上线信息";
+"SettingsLastSeenEverybody" = "每个人都可见";
 
-"SettingsLastSeenHint" = "设置最后上线信息可见对象或者隐藏最后上线信息";
+"SettingsLastSeenContacts"  = "联系人可见";
+
+"SettingsLastSeenNone"    = "没人";
+
 
 "SettingsMobilePhone"    = "手机";
+
+/*
+ * Calls
+ */
+
+"CallsStartAudio" = "语音通话";
+
+"CallsStartGroupAudio" = "群组语音通话";
+
+"CallsAnswer" = "接听";
+
+"CallsDecline" = "拒绝";
+
+"CallsMute" = "静音";
+
+"CallsSpeaker" = "免提";
+
+"CallsVideo" = "视频";
+
+"CallStateRinging" = "拨号中...";
+
+"CallStateConnecting" = "连接中...";
+
+"CallStateIncoming" = "来电...";
+
+"CallPrivateTitle" = "一对一通话";
+
+"CallPrivateText" = "{name}来电";
+
+"CallGroupTitle" = "群组通话";
+
+"CallGroupText" = "{name}发起群组通话";
 
 /*
  * Profile
@@ -105,7 +134,7 @@
 
 "ProfileNotifications" = "通知";
 
-"ProfileNotificationsWarring" = "你要屏蔽针对这个人的推送提醒消息吗？这样可能会引起你和他（她）的关系哦。";
+"ProfileNotificationsWarring" = "你要屏蔽关于这个人的推送提醒吗？屏蔽后可能会影响你和他（她）的关系哦。";
 
 "ProfileNotificationsWarringAction" = "屏蔽";
 
@@ -117,21 +146,27 @@
 
 "ProfileRenameMessage" = "你可以修改通讯录中的联系人名称，此修改只体现在你的通讯录中。";
 
-"ProfileRenameAction" = "改名";
+"ProfileRenameAction" = "";
 
-"ProfileAbout" = "个性签名";
+"ProfileAbout" = "自我介绍";
 
 "ProfilePhone" = "手机";
 
-"ProfileUsername" = "昵称";
+"ProfileUsername" = "用户名";
 
 "ProfileTitle" = "详细资料";
 
-"CallNumber" = "拨打这个手机";
+"CallNumber" = "拨打电话";
 
-"CopyNumber" = "复制手机号码";
+"CopyNumber" = "复制号码";
 
-"NumberCopied" = "手机号码已经复制到剪贴板中";
+"NumberCopied" = "电话号码已经复制到剪贴板中";
+
+"SettingsEditHeader" = "姓名";
+
+"SettingsEditHint" = "请输入您的真实姓名，以便于好友识别。";
+
+"SettingsEditFieldHint" = "请输入姓名";
 
 /*
  * Publics
@@ -153,7 +188,7 @@
 
 "GroupEditConfirm" = "确定要修改群组名称吗？";
 
-"GroupEditConfirmAction" = "修改名称";
+"GroupEditConfirmAction" = "修改";
 
 "GroupNotifications" = "通知";
 
@@ -161,17 +196,17 @@
 
 "GroupIntegrations" = "集成";
 
-"GroupMembers" = "{0} 个成员";
+"GroupMembers" = "{0}个成员";
 
 "GroupMemberAdmin" = "管理员";
 
 "GroupMemberInfo" = "成员信息";
 
-"GroupMemberMakeAdmin" = "设为管理员";
+"GroupMemberMakeAdmin" = "设为群组管理员";
 
-"GroupMemberMakeMessage" = "确认要设{name}为这个群组的管理员吗?";
+"GroupMemberMakeMessage" = "确定将 {name} 设为群组管理员吗?";
 
-"GroupMemberMakeAction" = "是";
+"GroupMemberMakeAction" = "确定";
 
 "GroupMemberKick" = "移出群组";
 
@@ -181,9 +216,9 @@
 
 "GroupMemberWrite" = "编辑消息";
 
-"GroupMemberCall" = "拨打手机";
+"GroupMemberCall" = "打电话";
 
-"GroupMemberCallNoPhones" = "此用户没有手机号码。";
+"GroupMemberCallNoPhones" = "无可拨打电话";
 
 "GroupAddParticipant" = "添加参与者...";
 
@@ -223,7 +258,7 @@
 
 "GroupJoinAction" = "加入";
 
-"GroupMembers" = "成员";
+"GroupMembers" = "群组成员";
 
 /*
  * Compose
@@ -231,17 +266,23 @@
 
 "ComposeTitle" = "新消息";
 
-"CreateGroup" = "发起群聊";
+"CreateGroup" = "创建群组";
 
-"CreateGroupTitle" = "发起群聊";
+"CreateGroupTitle" = "创建群组";
+
+"CreateGroupHint" = "请填写群组名称和图标";
 
 "CreateGroupNamePlaceholder" = "输入群组名称";
 
-"CreateGroupHint" = "设置群组名称和头像";
+"CreateGroupMembersTitle" = "邀请成员";
 
-"CreateGroupMembersTitle" = "邀请";
+"CreateGroupMembersPlaceholders" = "输入名称";
 
-"CreateGroupMembersPlaceholders" = "输入姓名";
+/*
+ * Location
+ */
+
+"LocationTitle" = "位置";
 
 /*
  * Notifications
@@ -273,11 +314,11 @@
 
 "NotificationSecretMessage" = "新消息";
 
-"NotificationsGroups" = "群组消息通知";
+"NotificationsGroups" = "群组通知";
 
-"NotificationsOnlyMentions" = "仅当被提到时";
+"NotificationsOnlyMentions" = "仅当被@提到时";
 
-"NotificationsOnlyMentionsHint" = "只有当消息中提到你时才通知。";
+"NotificationsOnlyMentionsHint" = "只有当消息中提到你时才通知";
 
 /*
  * Privacy
@@ -285,19 +326,19 @@
 
 "SecurityTitle" = "安全";
 
-"PrivacyTerminate" = "退出其它登录设备";
+"PrivacyTerminate" = "下线所有其它登录";
 
-"PrivacyTerminateAlert" = "退出其它已登录设备";
+"PrivacyTerminateAlert" = "下线所有其它登录";
 
-"PrivacyTerminateAlertSingle" = "退出此设备";
+"PrivacyTerminateAlertSingle" = "下线";
 
-"PrivacyTerminateHint" = "退出除此设备之外的所有登录设备。";
+"PrivacyTerminateHint" = "下线所有其它登录。";
 
 /*
  * Wallpapers
  */
 
-"WallpapersTitle" = "墙纸";
+"WallpapersTitle" = "聊天背景";
 
 "WallpapersPhoto" = "手机相册";
 
@@ -309,7 +350,7 @@
 
 "ChatSend" = "发送";
 
-"ChatNoGroupAccess" = "你不是群组成员";
+"ChatNoGroupAccess" = "你不是此群组的成员";
 
 "ChatNewMessages" = "新消息";
 
@@ -319,27 +360,29 @@
 
 "ChatReleaseToSend" = "松开 发送";
 
-"ChatSlideUpToCancel" = "滑动 取消";
+"ChatSlideUpToCancel" = "上滑取消";
+
+"Chat.MicrophoneAccessDisabled"  = "我们需要访问麦克风来发送语音信息. 请打开 设置 — 隐私 — 麦克风，然后打开开关";
 
 /*
  * Chat attachment menu
  */
 
-"AttachmentsSendPhoto" = "发送{count}张照片";
+"AttachmentsSendPhoto" = "发送选中图片 ({count})";
 
-"AttachmentsSendPhotos" = "发送{count}张照片";
+"AttachmentsSendPhotos" = "发送选中图片 ({count})";
 
 /*
  * Find
  */
 
-"FindTitle" = "查找好友";
+"FindTitle" = "添加好友";
 
 "FindFieldHint" = "手机号码、昵称或邮件";
 
-"FindHint" = "请输入手机号码、昵称或者邮件，然后按‘查找’查询";
+"FindHint" = "请输入手机号码、昵称或者邮件，然后点击‘查找’";
 
-"FindNotFound" = "抱歉，查无此人";
+"FindNotFound" = "对不起，没有找到";
 
 /*
  * Placeholders
@@ -347,9 +390,9 @@
 
 "Placeholder_Empty_Title" = "邀请你的朋友";
 
-"Placeholder_Empty_Message" = "你的通讯录中没有人使用此系统，请点击下面按钮邀请他们。";
+"Placeholder_Empty_Message" = "你的通讯录中没有人使用{appname}，请点击下面按钮邀请他们。";
 
-"Placeholder_Empty_Action" = "告诉你的朋友";
+"Placeholder_Empty_Action" = "邀请好友";
 
 "Placeholder_Empty_Message2" = "或者手动添加好友";
 
@@ -363,7 +406,7 @@
 
 "Placeholder_Contacts_Message" = "你的通讯录中没有人使用{appname}，请点击下面按钮邀请他们。";
 
-"Placeholder_Contacts_Action" = "邀请好友";
+"Placeholder_Contacts_Action" = "告诉好友";
 
 "Placeholder_Contacts_Message2" = "或者点击右上角的＋按钮手动添加好友";
 
@@ -371,57 +414,87 @@
 
 "Placeholder_Dialogs_Message" = "从你的通讯录中选择一个好友，或者点击右上角的编辑按钮立刻开始聊天";
 
-"Placeholder_Group_Title" = "不是一个群组成员";
+"Placeholder_Group_Title" = "你不是群组成员";
 
-"Placeholder_Group_Message" = "您不是群组成员。";
+"Placeholder_Group_Message" = "非常不幸，你不是群成员。";
+
+"Placeholder_Location_Title" = "启用位置";
+
+"Placeholder_Location_Message" = "请启用定位服务的设备设置分享你的位置。";
+
+
+/*
+ * Welcome
+ */
+
+"WelcomeTitle" = "欢迎使用{app_name}!";
+
+"WelcomeTagline" = "免费、高速、安全的即时通讯";
+
+"WelcomeSignUp" = "注册";
+
+"WelcomeLogIn" = "登录";
+
 
 /*
  * Auth
  */
 
-"AuthMoreInfo" = "免费、快速、安全的移动门户";
+"AuthCountryTitle" = "国际区号";
 
-"AuthStarButton" = "开始";
+"AuthUnsupported" = "{app_name}的这个版本不支持此帐号，请更新应用再登录。";
 
-"AuthPhoneTitle" = "你的手机";
+"AuthLoginTitle" = "登录{app_name}";
 
-"AuthPhoneNumberHint" = "手机号码";
+"AuthLoginPhone" = "手机";
 
-"AuthPhoneHint" = "请选择国家并输入手机号码。";
+"AuthLoginEmail" = "邮件";
 
-"AuthTermsOfServiceFull" = "注册即表明您同意系统的服务条款。";
+"AuthLoginPhoneEmail" = "手机或邮件";
 
-"AuthTermsOfService" = "服务条款";
+"AuthNameTitle" = "请输入你的姓名";
 
-"AuthPhoneTooShort" = "手机号码太短";
+"AuthNamePlaceholder" = "姓名";
 
-"AuthCodeFieldHint" = "验证码";
+"AuthPhoneTitle" = "请输入你的手机号码";
 
-"AuthCodeHint" = "已经通过短信为你发送验证码，请稍侯。";
+"AuthPhoneHint" = "为了保障你的个人信息安全，需要验证你的手机号码。";
 
-"AuthCallHint" = "{time}秒后拨打手机告知验证码";
+"AuthPhonePlaceholder" = "手机号码";
 
-"AuthCallDoneHint" = "已经给您拨打手机";
+"AuthPhoneUseEmail" = "使用邮件";
 
-"AuthNoCodeHint" = "无法获取验证码?";
+"AuthEmailTitle" = "请输入你的电子邮件";
 
-"AuthProfileTitle" = "你的信息";
+"AuthEmailHint" = "不会向你发送任何垃圾邮件。";
 
-"AuthProfileAddPhoto1" = "添加";
+"AuthEmailPlaceholder" = "电子邮件";
 
-"AuthProfileAddPhoto2" = "头像";
+"AuthEmailUsePhone" = "使用手机";
 
-"AuthProfileNameHint" = "姓名";
+"AuthDisclaimer" = "注册表示你同意服务条款和隐私政策。";
 
-"AuthProfileHint" = "请输入姓名并上传头像";
+"AuthDisclaimerTosOnly" = "注册表示你同意服务条款。";
 
-"AuthTerms" = "";
+"AuthDisclaimerPrivacyOnly" = "注册表示你同意隐私政策。";
 
-/*
- * Location
- */
+"AuthDisclaimerToS" = "服务条款";
 
-"LocationTitle" = "位置";
+"AuthDisclaimerPrivacy" = "隐私政策";
+
+"AuthOTPEmailTitle" = "确认邮件";
+
+"AuthOTPPhoneTitle" = "确认手机号码";
+
+"AuthOTPEmailHint" = "验证码邮件已发送。\n请输入";
+
+"AuthOTPPhoneHint" = "验证码短信已发送。\n请输入";
+
+"AuthOTPPlaceholder" = "验证码";
+
+"AuthOTPNoCode" = "收不到验证码?";
+
+"AuthOTPCallHint" = "{app_name}将在{time}秒后拨打手机告知验证码";
 
 /*
  * Common Elements
@@ -429,7 +502,7 @@
 
 "CurrentLocale" = "Cn";
 
-"InviteText" = "免费、快速、安全的移动门户及即时通讯：{link}";
+"InviteText" = "您好！让我们一起使用{appname}安全开聊吧! {link}";
 
 "PhotoRemove" = "删除头像";
 
@@ -443,7 +516,7 @@
 
 "ShareLocation" = "位置";
 
-"ShareContact" = "个人名片";
+"ShareContact" = "联系人";
 
 /*
  *  Navigation
@@ -489,6 +562,7 @@
 
 "UnsupportedContent" = "这个版本不支持此消息。请等待应用升级，之后就可以看到消息了。";
 
+
 /*
  * Actions
  */
@@ -501,8 +575,18 @@
 
 "AlertLinkCopied" = "链接已经被复制到剪贴板。";
 
+"ActionOpenLink" = "打开链接";
+
+"ActionCancel" = "取消";
+
+"ActionAddPhoto1" = "添加";
+
+"ActionAddPhoto2" = "头像";
+
+"ActionOpenCode" = "查看代码";
+
 /*
- * Network
+ *  Network
  */
 
 "StatusConnecting" = "连接中...";
@@ -522,6 +606,8 @@
 "ErrorUnableToJoin" = "无法加入群组";
 
 "ErrorUnableToCall" = "无法拨打这个号码";
+
+
 
 "Undo Typing" = "撤销输入";
 
