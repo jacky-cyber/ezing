@@ -7,10 +7,18 @@ import UIKit
 import MobileCoreServices
 import AddressBook
 import AddressBookUI
-import SVProgressHUD
 
-class ConversationViewController: AAConversationContentController, UIDocumentMenuDelegate, UIDocumentPickerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AALocationPickerControllerDelegate,
-    ABPeoplePickerNavigationControllerDelegate,AAAudioRecorderDelegate {
+public class ConversationViewController:
+    AAConversationContentController,
+    UIDocumentMenuDelegate,
+    UIDocumentPickerDelegate,
+    UIImagePickerControllerDelegate,
+    UINavigationControllerDelegate,
+    AALocationPickerControllerDelegate,
+    ABPeoplePickerNavigationControllerDelegate,
+    AAAudioRecorderDelegate,
+    AAConvActionSheetDelegate,
+    AAStickersKeyboardDelegate {
     
     // Data binder
     private let binder = AABinder()
@@ -21,39 +29,50 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     let content: ACPage!
     var appStyle: ActorStyle { get { return ActorSDK.sharedActor().style } }
     
-    // States
     
-    private var micOn: Bool! = true
-    
+    //
     // Views
+    //
+    
     private let titleView: UILabel = UILabel()
     private let subtitleView: UILabel = UILabel()
     private let navigationView: UIView = UIView()
-    private let avatarView = AABarAvatarView(frameSize: 36, type: .Rounded)
+    private let avatarView = AABarAvatarView()
     private let backgroundView = UIImageView()
     private var audioButton: UIButton = UIButton()
-    private var actionSheet: AAConvActionSheet!
     private var voiceRecorderView : AAVoiceRecorderView!
     
-    // Stickers
     
-    private var stickersView: AAStickersView!
+    //
+    // Stickers
+    //
+    
+    private var stickersView: AAStickersKeyboard!
     private var stickersButton : UIButton!
     private var stickersOpen = false
     
+    
+    //
+    // Audio Recorder
+    //
+    
+    public var audioRecorder: AAAudioRecorder!
+    
+    
+    //
     // Mode
+    //
     
     private var textMode:Bool!
+    private var micOn: Bool! = true
     
-    
-    
-    var audioRecorder: AAAudioRecorder!
+
     
     ////////////////////////////////////////////////////////////
     // MARK: - Init
     ////////////////////////////////////////////////////////////
     
-    override init(peer: ACPeer) {
+    required override public init(peer: ACPeer) {
         
         // Data
         
@@ -63,7 +82,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         super.init(peer: peer)
         
+        
+        //
         // Background
+        //
         
         backgroundView.clipsToBounds = true
         backgroundView.contentMode = .ScaleAspectFill
@@ -78,32 +100,45 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                 backgroundView.image = UIImage(contentsOfFile:path)
             }
         }
-        
         view.insertSubview(backgroundView, atIndex: 0)
         
+        
+        //
         // slk settings
+        //
         self.bounces = false
+        self.keyboardPanningEnabled = true
+        self.registerPrefixesForAutoCompletion(["@"])
         
         
+        //
         // Text Input
-        
+        //
         self.textInputbar.backgroundColor = appStyle.chatInputFieldBgColor
         self.textInputbar.autoHideRightButton = false;
         self.textInputbar.translucent = false
         
-        // Text view placeholder
-        self.textView.placeholder = AALocalized("ChatPlaceholder")
         
+        //
+        // Text view
+        //
+        self.textView.placeholder = AALocalized("ChatPlaceholder")
+        self.textView.keyboardAppearance = ActorSDK.sharedActor().style.isDarkApp ? .Dark : .Light
+        
+        
+        //
         // Add stickers button
+        //
         self.stickersButton = UIButton(type: UIButtonType.System)
         self.stickersButton.tintColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.5)
         self.stickersButton.setImage(UIImage.bundled("sticker_button"), forState: UIControlState.Normal)
-        self.stickersButton.frame = CGRectMake(self.view.frame.size.width-67, 12, 20, 20)
-        self.stickersButton.addTarget(self, action: "changeKeyboard", forControlEvents: UIControlEvents.TouchUpInside)
+        self.stickersButton.addTarget(self, action: #selector(ConversationViewController.changeKeyboard), forControlEvents: UIControlEvents.TouchUpInside)
+        self.textInputbar.addSubview(stickersButton)
         
-        //self.textInputbar.addSubview(stickersButton)
         
+        //
         // Check text for set right button
+        //
         let checkText = Actor.loadDraftWithPeer(peer)!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         
         if (checkText.isEmpty) {
@@ -117,9 +152,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             
             self.rightButton.layoutIfNeeded()
             
-            self.rightButton.addTarget(self, action: "beginRecord:event:", forControlEvents: UIControlEvents.TouchDown)
-            self.rightButton.addTarget(self, action: "mayCancelRecord:event:", forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
-            self.rightButton.addTarget(self, action: "finishRecord:event:", forControlEvents: UIControlEvents.TouchUpInside.union(UIControlEvents.TouchCancel).union(UIControlEvents.TouchUpOutside))
+            self.rightButton.addTarget(self, action: #selector(ConversationViewController.beginRecord(_:event:)), forControlEvents: UIControlEvents.TouchDown)
+            self.rightButton.addTarget(self, action: #selector(ConversationViewController.mayCancelRecord(_:event:)), forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
+            self.rightButton.addTarget(self, action: #selector(ConversationViewController.finishRecord(_:event:)), forControlEvents: UIControlEvents.TouchUpInside.union(UIControlEvents.TouchCancel).union(UIControlEvents.TouchUpOutside))
             
         } else {
             
@@ -134,22 +169,21 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             self.rightButton.enabled = true
             
             self.rightButton.layoutIfNeeded()
-            
         }
         
-        // voice recorder delegate
+        
+        //
+        // Voice Recorder
+        //
         self.audioRecorder = AAAudioRecorder()
         self.audioRecorder.delegate = self
         
-        self.keyboardPanningEnabled = true
-        
-        self.registerPrefixesForAutoCompletion(["@"])
-        
-        self.textView.keyboardAppearance = ActorSDK.sharedActor().style.isDarkApp ? .Dark : .Light
-
         self.leftButton.setImage(UIImage.tinted("conv_attach", color: appStyle.chatAttachColor), forState: UIControlState.Normal)
         
+        
+        //
         // Navigation Title
+        //
         
         navigationView.frame = CGRectMake(0, 0, 200, 44)
         navigationView.autoresizingMask = UIViewAutoresizing.FlexibleWidth
@@ -172,26 +206,35 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         self.navigationItem.titleView = navigationView
         
-        // Navigation Avatar
         
-        avatarView.frame = CGRectMake(0, 0, 36, 36)
-        let avatarTapGesture = UITapGestureRecognizer(target: self, action: "onAvatarTap")
-        avatarTapGesture.numberOfTapsRequired = 1
-        avatarTapGesture.numberOfTouchesRequired = 1
-        avatarView.addGestureRecognizer(avatarTapGesture)
+        //
+        // Navigation Avatar
+        //
+        avatarView.frame = CGRectMake(0, 0, 40, 40)
+        avatarView.viewDidTap = onAvatarTap
         
         let barItem = UIBarButtonItem(customView: avatarView)
-        self.navigationItem.rightBarButtonItem = barItem
+        let isBot: Bool
+        if (peer.isPrivate) {
+            isBot = Bool(Actor.getUserWithUid(peer.peerId).isBot())
+        } else {
+            isBot = false
+        }
+        if (ActorSDK.sharedActor().enableCalls && !isBot && peer.isPrivate) {
+            let callButtonView = AACallButton(image: UIImage.bundled("ic_call_outline_22")?.tintImage(ActorSDK.sharedActor().style.navigationTintColor))
+            callButtonView.viewDidTap = onCallTap
+            let callButtonItem = UIBarButtonItem(customView: callButtonView)
+            self.navigationItem.rightBarButtonItems = [barItem, callButtonItem]
+        } else {
+            self.navigationItem.rightBarButtonItems = [barItem]
+        }
     }
     
-    required init(coder aDecoder: NSCoder!) {
+    required public init(coder aDecoder: NSCoder!) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    ////////////////////////////////////////////////////////////
-    // MARK: - Lifecycle
-    ////////////////////////////////////////////////////////////
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
         self.voiceRecorderView = AAVoiceRecorderView(frame: CGRectMake(0,0,self.view.frame.size.width-30,44))
@@ -202,36 +245,45 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
         
         let frame = CGRectMake(0, 0, self.view.frame.size.width, 216)
-        self.stickersView = AAStickersView(frame: frame, convContrller: self)
-        
+        self.stickersView = AAStickersKeyboard(frame: frame)
+        self.stickersView.delegate = self
         
         NSNotificationCenter.defaultCenter().addObserver(
             self,
-            selector: "updateStickersStateOnCloseKeyboard",
+            selector: #selector(ConversationViewController.updateStickersStateOnCloseKeyboard),
             name: SLKKeyboardWillHideNotification,
             object: nil)
-        
-        navigationController?.view.layer.speed = 1.5
-        
     }
     
-    override func viewWillAppear(animated: Bool) {
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        self.stickersButton.frame = CGRectMake(self.view.frame.size.width-67, 12, 20, 20)
+    }
+    
+    ////////////////////////////////////////////////////////////
+    // MARK: - Lifecycle
+    ////////////////////////////////////////////////////////////
+    
+    override public func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         // Installing bindings
         if (peer.peerType.ordinal() == ACPeerType.PRIVATE().ordinal()) {
+
             let user = Actor.getUserWithUid(peer.peerId)
-            let nameModel = user.getNameModel();
+            let nameModel = user.getNameModel()
+            let blockStatus = user.isBlockedModel().get().booleanValue()
             
             binder.bind(nameModel, closure: { (value: NSString?) -> () in
-                self.titleView.text = String(value!);
-                self.navigationView.sizeToFit();
+                self.titleView.text = String(value!)
+                self.navigationView.sizeToFit()
             })
             binder.bind(user.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
-                self.avatarView.bind(user.getNameModel().get(), id: user.getId(), avatar: value)
+                self.avatarView.bind(user.getNameModel().get(), id: Int(user.getId()), avatar: value)
             })
             
-            binder.bind(Actor.getTypingWithUid(peer.peerId)!, valueModel2: user.getPresenceModel(), closure:{ (typing:JavaLangBoolean?, presence:ACUserPresence?) -> () in
+            binder.bind(Actor.getTypingWithUid(peer.peerId), valueModel2: user.getPresenceModel(), closure:{ (typing:JavaLangBoolean?, presence:ACUserPresence?) -> () in
                 
                 if (typing != nil && typing!.booleanValue()) {
                     self.subtitleView.text = Actor.getFormatter().formatTyping()
@@ -252,6 +304,19 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                     }
                 }
             })
+            
+            //
+            //Unblock User
+            //
+            
+            if(blockStatus){
+                
+                let unblockActionSheet = AAUnblockActionSheet()
+                unblockActionSheet.delegate = self
+                unblockActionSheet.presentInController(self)
+            
+            }
+        
         } else if (peer.peerType.ordinal() == ACPeerType.GROUP().ordinal()) {
             let group = Actor.getGroupWithGid(peer.peerId)
             let nameModel = group.getNameModel()
@@ -261,11 +326,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
                 self.navigationView.sizeToFit();
             })
             binder.bind(group.getAvatarModel(), closure: { (value: ACAvatar?) -> () in
-                self.avatarView.bind(group.getNameModel().get(), id: group.getId(), avatar: value)
+                self.avatarView.bind(group.getNameModel().get(), id: Int(group.getId()), avatar: value)
             })
-            binder.bind(Actor.getGroupTypingWithGid(group.getId())!, valueModel2: group.getMembersModel(), valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
+            binder.bind(Actor.getGroupTypingWithGid(group.getId()), valueModel2: group.getMembersModel(), valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
                 if (!group.isMemberModel().get().booleanValue()) {
                     self.subtitleView.text = AALocalized("ChatNoGroupAccess")
+                    self.subtitleView.textColor = self.appStyle.navigationSubtitleColor
                     self.setTextInputbarHidden(true, animated: true)
                     return
                 } else {
@@ -309,18 +375,19 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
     }
     
-    override func viewWillLayoutSubviews() {
+    override public func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        backgroundView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: view.bounds.height)
+        
+        backgroundView.frame = view.bounds
         
         titleView.frame = CGRectMake(0, 4, (navigationView.frame.width - 0), 20)
         subtitleView.frame = CGRectMake(0, 22, (navigationView.frame.width - 0), 20)
+        
+        stickersView.frame = CGRectMake(0, 0, self.view.frame.size.width, 216)
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override public func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
-        //navigationController?.view.layer.speed = 1
         
         if navigationController!.viewControllers.count > 2 {
             let firstController = navigationController!.viewControllers[0]
@@ -331,17 +398,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         if !AADevice.isiPad {
             AANavigationBadge.showBadge()
         }
-        
-        // action sheet init
-        self.actionSheet = AAConvActionSheet(maxSelected: 9, weakSuperIn: self)
-        
-        self.navigationController?.view.addSubview(self.actionSheet)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override public func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        navigationController?.view.layer.speed = 1.5
         
         Actor.onConversationClosedWithPeer(peer)
         ActorSDK.sharedActor().trackPageHidden(content)
@@ -354,17 +414,13 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.textView.resignFirstResponder()
     }
 
-    override func viewDidDisappear(animated: Bool) {
+    override public func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        navigationController?.view.layer.speed = 1
         
         Actor.saveDraftWithPeer(peer, withDraft: textView.text)
         
         // Releasing bindings
         binder.unbindAll()
-    
-        self.actionSheet.removeFromSuperview()
-        self.actionSheet = nil
     }
 
     ////////////////////////////////////////////////////////////
@@ -401,27 +457,25 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         }
     }
     
+    func onCallTap() {
+        if (self.peer.isGroup) {
+            execute(ActorSDK.sharedActor().messenger.doCallWithGid(self.peer.peerId))
+        } else if (self.peer.isPrivate) {
+            execute(ActorSDK.sharedActor().messenger.doCallWithUid(self.peer.peerId))
+        }
+    }
+    
     ////////////////////////////////////////////////////////////
     // MARK: - Text bar actions
     ////////////////////////////////////////////////////////////
     
-    override func textWillUpdate() {
-        super.textWillUpdate();
-
-        Actor.onTypingWithPeer(peer);
-    }
-    
-    
-    
-    override func textDidUpdate(animated: Bool) {
+    override public func textDidUpdate(animated: Bool) {
         super.textDidUpdate(animated)
-        
-        self.checkTextInTextView()
-        
+        Actor.onTypingWithPeer(peer)
+        checkTextInTextView()
     }
     
     func checkTextInTextView() {
-        
         
         let text = self.textView.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         self.rightButton.enabled = true
@@ -430,9 +484,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         if !text.isEmpty && textMode == false {
             
-            self.rightButton.removeTarget(self, action: "beginRecord:event:", forControlEvents: UIControlEvents.TouchDown)
-            self.rightButton.removeTarget(self, action: "mayCancelRecord:event:", forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
-            self.rightButton.removeTarget(self, action: "finishRecord:event:", forControlEvents: UIControlEvents.TouchUpInside.union(UIControlEvents.TouchCancel).union(UIControlEvents.TouchUpOutside))
+            self.rightButton.removeTarget(self, action: #selector(ConversationViewController.beginRecord(_:event:)), forControlEvents: UIControlEvents.TouchDown)
+            self.rightButton.removeTarget(self, action: #selector(ConversationViewController.mayCancelRecord(_:event:)), forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
+            self.rightButton.removeTarget(self, action: #selector(ConversationViewController.finishRecord(_:event:)), forControlEvents: UIControlEvents.TouchUpInside.union(UIControlEvents.TouchCancel).union(UIControlEvents.TouchUpOutside))
             
             self.rebindRightButton()
             
@@ -450,9 +504,9 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             
         } else if (text.isEmpty && textMode == true) {
             
-            self.rightButton.addTarget(self, action: "beginRecord:event:", forControlEvents: UIControlEvents.TouchDown)
-            self.rightButton.addTarget(self, action: "mayCancelRecord:event:", forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
-            self.rightButton.addTarget(self, action: "finishRecord:event:", forControlEvents: UIControlEvents.TouchUpInside.union(UIControlEvents.TouchCancel).union(UIControlEvents.TouchUpOutside))
+            self.rightButton.addTarget(self, action: #selector(ConversationViewController.beginRecord(_:event:)), forControlEvents: UIControlEvents.TouchDown)
+            self.rightButton.addTarget(self, action: #selector(ConversationViewController.mayCancelRecord(_:event:)), forControlEvents: UIControlEvents.TouchDragInside.union(UIControlEvents.TouchDragOutside))
+            self.rightButton.addTarget(self, action: #selector(ConversationViewController.finishRecord(_:event:)), forControlEvents: UIControlEvents.TouchUpInside.union(UIControlEvents.TouchCancel).union(UIControlEvents.TouchUpOutside))
             
             self.stickersButton.hidden = false
             
@@ -476,32 +530,30 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     // MARK: - Right/Left button pressed
     ////////////////////////////////////////////////////////////
     
-    override func didPressRightButton(sender: AnyObject!) {
-        
+    override public func didPressRightButton(sender: AnyObject!) {
         if !self.textView.text.isEmpty {
-            
             Actor.sendMessageWithMentionsDetect(peer, withText: textView.text)
             super.didPressRightButton(sender)
-            
         }
-
     }
     
-    override func didPressLeftButton(sender: AnyObject!) {
+    override public func didPressLeftButton(sender: AnyObject!) {
         super.didPressLeftButton(sender)
         
         self.textInputbar.textView.resignFirstResponder()
         
-        self.actionSheet.showAnimation()
-        
         self.rightButton.layoutIfNeeded()
+        
+        let actionSheet = AAConvActionSheet()
+        actionSheet.delegate = self
+        actionSheet.presentInController(self)
     }
  
     ////////////////////////////////////////////////////////////
     // MARK: - Completition
     ////////////////////////////////////////////////////////////
     
-    override func didChangeAutoCompletionPrefix(prefix: String!, andWord word: String!) {
+    override public func didChangeAutoCompletionPrefix(prefix: String!, andWord word: String!) {
         if self.peer.peerType.ordinal() == ACPeerType.GROUP().ordinal() {
             if prefix == "@" {
                 
@@ -533,17 +585,17 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     // MARK: - TableView for completition
     ////////////////////////////////////////////////////////////
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredMembers.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let res = AAAutoCompleteCell(style: UITableViewCellStyle.Default, reuseIdentifier: "user_name")
         res.bindData(filteredMembers[indexPath.row], highlightWord: foundWord)
         return res
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let user = filteredMembers[indexPath.row]
 
         var postfix = " "
@@ -554,34 +606,68 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         acceptAutoCompletionWithString(user.mentionString + postfix, keepPrefix: !user.isNickname)
     }
     
-    override func heightForAutoCompletionView() -> CGFloat {
+    override public func heightForAutoCompletionView() -> CGFloat {
         let cellHeight: CGFloat = 44.0;
         return cellHeight * CGFloat(filteredMembers.count)
     }
     
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+    override public func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         cell.separatorInset = UIEdgeInsetsZero
         cell.preservesSuperviewLayoutMargins = false
         cell.layoutMargins = UIEdgeInsetsZero
     }
-    
+
     ////////////////////////////////////////////////////////////
-    // MARK: - Document picking
+    // MARK: - Picker
     ////////////////////////////////////////////////////////////
     
-    func pickDocument() {
+    public func actionSheetPickCamera() {
+        pickImage(.Camera)
+    }
+    
+    public func actionSheetPickGallery() {
+        pickImage(.PhotoLibrary)
+    }
+    
+    public func actionSheetPickContact() {
+        let pickerController = ABPeoplePickerNavigationController()
+        pickerController.peoplePickerDelegate = self
+        self.presentViewController(pickerController, animated: true, completion: nil)
+    }
+    
+    public func actionSheetPickLocation() {
+        let pickerController = AALocationPickerController()
+        pickerController.delegate = self
+        self.presentViewController(AANavigationController(rootViewController:pickerController), animated: true, completion: nil)
+    }
+    
+    public func actionSheetPickedImages(images: [UIImage]) {
+        for i in images {
+            Actor.sendUIImage(i, peer: peer)
+        }
+    }
+    
+    public func actionSheetPickDocument() {
         let documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll as! [String], inMode: UIDocumentPickerMode.Import)
         documentPicker.view.backgroundColor = UIColor.clearColor()
         documentPicker.delegate = self
         self.presentViewController(documentPicker, animated: true, completion: nil)
     }
     
-    func documentMenu(documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
+    public func actionSheetUnblockContact() {
+        self.executePromise(Actor.unblockUser(Actor.getUserWithUid(peer.peerId).getId()))
+    }
+    
+    ////////////////////////////////////////////////////////////
+    // MARK: - Document picking
+    ////////////////////////////////////////////////////////////
+    
+    public func documentMenu(documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
         documentPicker.delegate = self
         self.presentViewController(documentPicker, animated: true, completion: nil)
     }
     
-    func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
+    public func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
         
         // Loading path and file name
         let path = url.path!
@@ -628,12 +714,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         self.presentViewController(pickerController, animated: true, completion: nil)
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
+    public func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String : AnyObject]?) {
         picker.dismissViewControllerAnimated(true, completion: nil)
         Actor.sendUIImage(image, peer: peer)
     }
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    public func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         picker.dismissViewControllerAnimated(true, completion: nil)
         
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
@@ -645,29 +731,19 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
     }
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    public func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         picker.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func sendImageFromActionSheet(image:UIImage) {
-        Actor.sendUIImage(image, peer: peer)
     }
     
     ////////////////////////////////////////////////////////////
     // MARK: - Location picking
     ////////////////////////////////////////////////////////////
-    
-    func pickLocation() {
-        let pickerController = AALocationPickerController()
-        pickerController.delegate = self
-        self.presentViewController(AANavigationController(rootViewController:pickerController), animated: true, completion: nil)
-    }
-    
-    func locationPickerDidCancelled(controller: AALocationPickerController) {
+
+    public func locationPickerDidCancelled(controller: AALocationPickerController) {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    func locationPickerDidPicked(controller: AALocationPickerController, latitude: Double, longitude: Double) {
+    public func locationPickerDidPicked(controller: AALocationPickerController, latitude: Double, longitude: Double) {
         Actor.sendLocationWithPeer(self.peer, withLongitude: JavaLangDouble(double: longitude), withLatitude: JavaLangDouble(double: latitude), withStreet: nil, withPlace: nil)
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
@@ -676,19 +752,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     // MARK: - Contact picking
     ////////////////////////////////////////////////////////////
     
-    func pickContact() {
-        if(ABAddressBookGetAuthorizationStatus() == ABAuthorizationStatus.Authorized){
-            let pickerController = ABPeoplePickerNavigationController()
-            pickerController.peoplePickerDelegate = self
-            self.presentViewController(pickerController, animated: true, completion: nil)
-        }else{
-            let alert = UIAlertView(title: "无法访问您的通讯录", message: "请到[设置]->[隐私]->[通讯录]中允许本应用访问通讯录", delegate: nil, cancelButtonTitle: "好")
-            alert.show()
-        }
-        
-    }
-    
-    func peoplePickerNavigationController(peoplePicker: ABPeoplePickerNavigationController, didSelectPerson person: ABRecord) {
+    public func peoplePickerNavigationController(peoplePicker: ABPeoplePickerNavigationController, didSelectPerson person: ABRecord) {
         
         // Dismissing picker
         
@@ -716,7 +780,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         let jPhones = JavaUtilArrayList()
         let phoneNumbers: ABMultiValueRef = ABRecordCopyValue(person, kABPersonPhoneProperty).takeRetainedValue()
         let phoneCount = ABMultiValueGetCount(phoneNumbers)
-        for (var i = 0;i < phoneCount ; i++) {
+        for i in 0 ..< phoneCount {
             let phone = (ABMultiValueCopyValueAtIndex(phoneNumbers, i).takeRetainedValue() as! String).trim()
             jPhones.addWithId(phone)
         }
@@ -726,7 +790,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         let jEmails = JavaUtilArrayList()
         let emails: ABMultiValueRef = ABRecordCopyValue(person, kABPersonEmailProperty).takeRetainedValue()
         let emailsCount = ABMultiValueGetCount(emails)
-        for (var i = 0; i < emailsCount; i++) {
+        for i in 0 ..< emailsCount {
             let email = (ABMultiValueCopyValueAtIndex(emails, i).takeRetainedValue() as! String).trim()
             if (email.length > 0) {
                 jEmails.addWithId(email)
@@ -737,6 +801,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         Actor.sendContactWithPeer(self.peer, withName: name!, withPhones: jPhones, withEmails: jEmails, withPhoto: jAvatarImage)
     }
+    
     
     ////////////////////////////////////////////////////////////
     // MARK: -
@@ -754,14 +819,12 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         
         audioRecorder.delegate = self
         audioRecorder.start()
-        
-        
     }
     
     func onAudioRecordingFinished() {
         print("onAudioRecordingFinished\n")
         
-        audioRecorder.finish({ (path: String!, duration: NSTimeInterval) -> Void in
+        audioRecorder.finish { (path: String!, duration: NSTimeInterval) -> Void in
             
             if (nil == path) {
                 print("onAudioRecordingFinished: empty path")
@@ -775,25 +838,21 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
 
             Actor.sendAudioWithPeer(self.peer, withName: NSString.localizedStringWithFormat("%@.ogg", NSUUID().UUIDString) as String,
                 withDuration: jint(duration*1000), withDescriptor: descriptor)
-            
-        })
-        
+        }
+        audioRecorder.cancel()
     }
     
-    func audioRecorderDidStartRecording() {
+    public func audioRecorderDidStartRecording() {
         self.voiceRecorderView.recordingStarted()
         
     }
     
     func onAudioRecordingCancelled() {
-        print("onAudioRecordingCancelled\n")
         stopAudioRecording()
     }
     
-    func stopAudioRecording()
-    {
-        if (audioRecorder != nil)
-        {
+    func stopAudioRecording() {
+        if (audioRecorder != nil) {
             audioRecorder.delegate = nil
             audioRecorder.cancel()
         }
@@ -861,7 +920,7 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
         let stickerViewFrame = self.stickersButton.frame
         stickersButton.frame.origin.x = self.stickersButton.frame.origin.x + 500
         
-        UIView.animateWithDuration(0.45, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+        UIView.animateWithDuration(1.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1.0, options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
             
             self.leftButton.frame = leftButtonFrame
             self.textView.frame = textViewFrame
@@ -876,13 +935,11 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     }
     
     func finishRecord(button:UIButton,event:UIEvent) {
-        
         closeRecorderAnimation()
         self.voiceRecorderView.hidden = true
         self.stickersButton.hidden = false
         self.onAudioRecordingFinished()
         self.voiceRecorderView.recordingStoped()
-        
     }
     
     ////////////////////////////////////////////////////////////
@@ -890,18 +947,14 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
     ////////////////////////////////////////////////////////////
     
     func updateStickersStateOnCloseKeyboard() {
-        
         self.stickersOpen = false
         self.stickersButton.setImage(UIImage.bundled("sticker_button"), forState: UIControlState.Normal)
         self.textInputbar.textView.inputView = nil
-        
     }
     
     func changeKeyboard() {
-        
-        
         if self.stickersOpen == false {
-            self.stickersView.loadStickers()
+            // self.stickersView.loadStickers()
             
             self.textInputbar.textView.inputView = self.stickersView
             self.textInputbar.textView.inputView?.opaque = false
@@ -910,17 +963,10 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             self.textInputbar.textView.refreshInputViews()
             self.textInputbar.textView.becomeFirstResponder()
             
-            
             self.stickersButton.setImage(UIImage.bundled("keyboard_button"), forState: UIControlState.Normal)
             
             self.stickersOpen = true
-            
-            self.textInputbar.layoutIfNeeded()
-            self.view.layoutIfNeeded()
-            
-            
         } else {
-            
             self.textInputbar.textView.inputView = nil
             
             self.textInputbar.textView.refreshFirstResponder()
@@ -930,23 +976,41 @@ class ConversationViewController: AAConversationContentController, UIDocumentMen
             self.stickersButton.setImage(UIImage.bundled("sticker_button"), forState: UIControlState.Normal)
             
             self.stickersOpen = false
-            
-            self.textInputbar.layoutIfNeeded()
-            self.view.layoutIfNeeded()
-            
         }
-        
+        self.textInputbar.layoutIfNeeded()
+        self.view.layoutIfNeeded()
     }
     
-    func sendSticker(sticker:ACSticker) {
-
+    public func stickerDidSelected(keyboard: AAStickersKeyboard, sticker: ACSticker) {
         Actor.sendStickerWithPeer(self.peer, withSticker: sticker)
-        
     }
+}
+
+class AABarAvatarView : AAAvatarView {
     
-    deinit {
-        print("conversation controller deinit'ed")
+//    override init(frameSize: Int, type: AAAvatarType) {
+//        super.init(frameSize: frameSize, type: type)
+//    }
+//    
+//    required init(coder aDecoder: NSCoder) {
+//        fatalError("init(coder:) has not been implemented")
+//    }
+    
+    override func alignmentRectInsets() -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
+    }
+}
+
+class AACallButton: UIImageView {
+    override init(image: UIImage?) {
+        super.init(image: image)
     }
 
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
+    override func alignmentRectInsets() -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0, left: -2, bottom: 0, right: 0)
+    }
 }

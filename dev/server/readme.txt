@@ -8,6 +8,10 @@ actor-server/actor-core/src/main/scala/im/actor/server/user/UserCommandHandlers.
 
 actor-server/actor-core/src/main/scala/sql/migration/V20160128142000__AkkaPersistence.scala 
 
+/actor-server/actor-core/src/main/scala/im/actor/server/messaging/PushText.scala
+
+actor-platform/actor-server/actor-rpc-api/src/main/scala/im/actor/server/api/rpc/service/auth/AuthErrors.scala
+
 sbt rpm:packageBin
 
 
