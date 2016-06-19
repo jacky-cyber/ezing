@@ -4,8 +4,6 @@
 
 import Foundation
 
-import Fabric
-import Crashlytics
 import ActorSDK
 
 @objc public class AppDelegate : ActorApplicationDelegate {
@@ -13,17 +11,22 @@ import ActorSDK
     override init() {
         super.init()
         
-        // Even when Fabric/Crashlytics not configured
-        // this method doesn't crash
-        Fabric.with([Crashlytics.self()])
-        
-        ActorSDK.sharedActor().inviteUrlHost = "invite.ezing.cn"
-        ActorSDK.sharedActor().inviteUrlScheme = "eZing"
+        ActorSDK.sharedActor().inviteUrlHost = "quit.email"
+        ActorSDK.sharedActor().inviteUrlScheme = "actor"
         
         ActorSDK.sharedActor().style.searchStatusBarStyle = .Default
         
         // Enabling experimental features
         ActorSDK.sharedActor().enableExperimentalFeatures = true
+        
+        ActorSDK.sharedActor().enableCalls = true
+        
+        ActorSDK.sharedActor().enableVideoCalls = true
+        
+        // Setting Development Push Id
+        ActorSDK.sharedActor().apiPushId = 868547
+        
+        ActorSDK.sharedActor().authStrategy = .PhoneEmail
         
         // Creating Actor
         ActorSDK.sharedActor().createActor()
