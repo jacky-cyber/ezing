@@ -13,6 +13,10 @@ public class AAComposeController: AAContactsListContentController, AAContactsLis
         self.isSearchAutoHide = false
         
         self.navigationItem.title = AALocalized("ComposeTitle")
+        
+        if AADevice.isiPad {
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: AALocalized("NavigationCancel"), style: UIBarButtonItemStyle.Plain, target: self, action: #selector(AAViewController.dismiss))
+        }
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -29,15 +33,18 @@ public class AAComposeController: AAContactsListContentController, AAContactsLis
             }
             
             r.selectAction = { () -> Bool in
-                //self.navigateNext(AAGroupCreateViewController(), removeCurrent: true)
-                self.navigateDetail(AAGroupCreateViewController())
+                self.navigateNext(AAGroupCreateViewController(), removeCurrent: true)
                 return false
             }
         }
     }
     
     public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
-        navigateDetail(ConversationViewController(peer: ACPeer.userWithInt(contact.uid)))
+        if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(contact.uid)) {
+            navigateDetail(customController)
+        } else {
+            navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(contact.uid)))
+        }
         return false
     }
 }
