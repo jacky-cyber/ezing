@@ -8,15 +8,15 @@ import Social
 import AddressBookUI
 import ContactsUI
 
-class AAContactsViewController: AAContactsListContentController, AAContactsListContentControllerDelegate, UIAlertViewDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate {
+public class AAContactsViewController: AAContactsListContentController, AAContactsListContentControllerDelegate, UIAlertViewDelegate, MFMessageComposeViewControllerDelegate, MFMailComposeViewControllerDelegate {
     
     var inviteText: String {
         get {
-            return AALocalized("InviteText").replace("{link}", dest: ActorSDK.sharedActor().inviteUrl).replace("{appname}", dest: ActorSDK.sharedActor().appNameInLocStrings)
+            return AALocalized("InviteText").replace("{link}", dest: ActorSDK.sharedActor().inviteUrl).replace("{appname}", dest: ActorSDK.sharedActor().appName)
         }
     }
     
-    override init() {
+    public override init() {
         super.init()
         
         content = ACAllEvents_Main.CONTACTS()
@@ -24,16 +24,16 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         tabBarItem = UITabBarItem(title: "TabPeople", img: "TabIconContacts", selImage: "TabIconContactsHighlighted")
         
         navigationItem.title = AALocalized("TabPeople")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "findContact")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: #selector(AAContactsViewController.findContact))
         
         delegate = self
     }
 
-    required init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
+    public func contactDidTap(controller: AAContactsListContentController, contact: ACContact) -> Bool {
         
         if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(contact.uid)) {
             navigateDetail(customController)
@@ -44,9 +44,9 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         return true
     }
     
-    func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
+    public func willAddContacts(controller: AAContactsListContentController, section: AAManagedSection) {
         
-        /*section.custom { (r: AACustomRow<AAContactActionCell>) -> () in
+        section.custom { (r: AACustomRow<AAContactActionCell>) -> () in
             
             r.height = 56
             
@@ -58,21 +58,6 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                 self.findContact()
                 return AADevice.isiPad
             }
-        }*/
-        
-        section.custom { (r:AACustomRow<AAContactActionCell>) -> () in
-            
-            r.height = 56
-            
-            r.closure = { (cell) -> () in
-                cell.bind("ic_add_user", actionTitle: AALocalized("CreateGroup"))
-            }
-            
-            r.selectAction = { () -> Bool in
-                //self.navigateNext(AAGroupCreateViewController(), removeCurrent: true)
-                self.navigateDetail(AAGroupCreateViewController())
-                return false
-            }
         }
         
         section.custom { (r: AACustomRow<AAContactActionCell>) -> () in
@@ -80,7 +65,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
             r.height = 56
             
             r.closure = { (cell: AAContactActionCell)->() in
-                cell.bind("ic_invite_user", actionTitle: "\(AALocalized("ContactsActionInvite")) \(ActorSDK.sharedActor().appNameInLocStrings)")
+                cell.bind("ic_invite_user", actionTitle: "\(AALocalized("ContactsActionInvite")) \(ActorSDK.sharedActor().appName)")
             }
             
             r.selectAction = { () -> Bool in
@@ -88,34 +73,34 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                 let builder = AAMenuBuilder()
                 
                 if MFMessageComposeViewController.canSendText() {
-                    builder.add("短信") { () -> () in
+                    builder.add("SMS") { () -> () in
                         self.showSmsInvitation(nil)
                     }
                 }
                 
                 if MFMailComposeViewController.canSendMail() {
-                    builder.add("邮件") { () -> () in
+                    builder.add("Email") { () -> () in
                         self.showEmailInvitation(nil)
                     }    
                 }
                 
-                /*if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTencentWeibo) {
-                    builder.add("Tencent Weibo") { () -> () in
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTencentWeibo) {
+                    builder.add("腾讯微博") { () -> () in
                         let vc = SLComposeViewController(forServiceType: SLServiceTypeTencentWeibo)
                         vc.setInitialText(self.inviteText)
                         self.presentViewController(vc, animated: true, completion: nil)
                     }
-                }*/
+                }
                 
                 if SLComposeViewController.isAvailableForServiceType(SLServiceTypeSinaWeibo) {
-                    builder.add("微博") { () -> () in
+                    builder.add("新浪微博") { () -> () in
                         let vc = SLComposeViewController(forServiceType: SLServiceTypeSinaWeibo)
                         vc.setInitialText(self.inviteText)
                         self.presentViewController(vc, animated: true, completion: nil)
                     }
                 }
                 
-                /*if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
+                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
                     builder.add("Twitter") { () -> () in
                         let vc = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
                         vc.setInitialText(self.inviteText)
@@ -129,7 +114,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                         vc.addURL(NSURL(string: ActorSDK.sharedActor().inviteUrl))
                         self.presentViewController(vc, animated: true, completion: nil)
                     }
-                }*/
+                }
                 
                 let view = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 1, inSection: 0))!.contentView
                 
@@ -142,7 +127,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
  
     // Searching for contact
     
-    func findContact() {
+    public func findContact() {
         
         startEditField { (c) -> () in
             c.title = "FindTitle"
@@ -173,10 +158,18 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                     
                     if user != nil {
                         c.execute(Actor.addContactCommandWithUid(user!.getId())!, successBlock: { (val) -> Void in
-                            self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(user!.getId())) {
+                                self.navigateDetail(customController)
+                            } else {
+                                self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            }
                             c.dismiss()
                         }, failureBlock: { (val) -> Void in
-                            self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(user!.getId())) {
+                                self.navigateDetail(customController)
+                            } else {
+                                self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                            }
                             c.dismiss()
                         })
                     } else {
@@ -187,7 +180,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         }
     }
     
-    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+    public func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         if buttonIndex == 1 {
             let textField = alertView.textFieldAtIndex(0)!
             if textField.text?.length > 0 {
@@ -205,7 +198,11 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
                     }
                     if user != nil {
                         self.execute(Actor.addContactCommandWithUid(user!.getId())!, successBlock: { (val) -> () in
-                                self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                                if let customController = ActorSDK.sharedActor().delegate.actorControllerForConversation(ACPeer_userWithInt_(user!.getId())) {
+                                    self.navigateDetail(customController)
+                                } else {
+                                    self.navigateDetail(ConversationViewController(peer: ACPeer_userWithInt_(user!.getId())))
+                                }
                             }, failureBlock: { (val) -> () in
                                 self.showSmsInvitation([textField.text!])
                         })
@@ -221,7 +218,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
     
     // Email Invitation
     
-    func showEmailInvitation(recipients: [String]?) {
+    public func showEmailInvitation(recipients: [String]?) {
         if MFMailComposeViewController.canSendMail() {
             
             let messageComposeController = MFMailComposeViewController()
@@ -237,16 +234,16 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         }
     }
     
-    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+    public func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
     
     // SMS Invitation
-    func showSmsInvitation() {
+    public func showSmsInvitation() {
         self.showSmsInvitation(nil)
     }
     
-    func showSmsInvitation(recipients: [String]?) {
+    public func showSmsInvitation(recipients: [String]?) {
         if MFMessageComposeViewController.canSendText() {
             let messageComposeController = MFMessageComposeViewController()
             messageComposeController.messageComposeDelegate = self
@@ -256,7 +253,7 @@ class AAContactsViewController: AAContactsListContentController, AAContactsListC
         }
     }
     
-    @objc func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
+    @objc public func messageComposeViewController(controller: MFMessageComposeViewController, didFinishWithResult result: MessageComposeResult) {
         controller.dismissViewControllerAnimated(true, completion: nil)
     }
 }
