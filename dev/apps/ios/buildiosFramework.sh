@@ -1,6 +1,7 @@
 set -e
 
 pod install
+pod update
 
 rm -fr build
 mkdir -p build/Output
@@ -15,7 +16,10 @@ xcodebuild \
   -configuration Release \
   -IDEBuildOperationMaxNumberOfConcurrentCompileTasks=4 \
   OTHER_CFLAGS="-fembed-bitcode" \
-  build
+  build \
+  CODE_SIGN_IDENTITY="" \
+  CODE_SIGNING_REQUIRED=NO
+
 
 rm -f build/Output/libactor.so
 lipo -create "build/Build/Intermediates/ActorSDK.build/Release-iphoneos/j2objc/Objects/libactor.so" -output build/Output/libactor.so

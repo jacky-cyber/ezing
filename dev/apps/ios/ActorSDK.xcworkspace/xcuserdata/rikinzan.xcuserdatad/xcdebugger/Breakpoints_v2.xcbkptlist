@@ -9,29 +9,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Conversation/ConversationViewController.swift"
-            timestampString = "474134248.040099"
+            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+            timestampString = "487352902.931975"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
-            landmarkName = "ConversationViewController"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Conversation/ConversationViewController.swift"
-            timestampString = "474134254.185663"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
-            landmarkName = "init(peer:)"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
+            landmarkName = "nextDidTap()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -41,13 +25,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Conversation/ConversationViewController.swift"
-            timestampString = "474134407.394009"
+            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthEmailViewController.swift"
+            timestampString = "487352991.632969"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "177"
-            endingLineNumber = "177"
-            landmarkName = "init(peer:)"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
+            landmarkName = "viewDidLoad()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -57,13 +41,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/AAStickersView.swift"
-            timestampString = "474134422.466972"
+            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+            timestampString = "487353018.946264"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "125"
-            endingLineNumber = "125"
-            landmarkName = "init(frame:convContrller:)"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
+            landmarkName = "nextDidTap()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -73,13 +57,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/AAStickersView.swift"
-            timestampString = "474134503.414466"
+            filePath = "ActorSDK/Sources/Controllers/Auth/AAAuthLogInViewController.swift"
+            timestampString = "487353483.379841"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "216"
-            endingLineNumber = "216"
-            landmarkName = "loadStickers()"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "nextDidTap()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -89,13 +73,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/AAStickersView.swift"
-            timestampString = "474134715.282225"
+            filePath = "ActorSDK/Sources/Views/AAAvatarView.swift"
+            timestampString = "488356499.640013"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "220"
-            endingLineNumber = "220"
-            landmarkName = "loadStickers()"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "bind(_:id:avatar:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -105,13 +89,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/AAStickersView.swift"
-            timestampString = "474135063.896599"
+            filePath = "ActorSDK/Sources/Views/Cells/AAAvatarCell.swift"
+            timestampString = "488367130.033676"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "214"
-            endingLineNumber = "214"
-            landmarkName = "loadStickers()"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
+            landmarkName = "layoutSubviews()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -121,189 +105,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/AAConversationContentController.swift"
-            timestampString = "475206421.773556"
+            filePath = "ActorSDK/Sources/Views/Cells/AAAvatarCell.swift"
+            timestampString = "488367131.975424"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "372"
-            endingLineNumber = "372"
-            landmarkName = "playVoiceFromPath(_:fileId:position:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/AAConversationContentController.swift"
-            timestampString = "475206511.679493"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "371"
-            endingLineNumber = "371"
-            landmarkName = "playVoiceFromPath(_:fileId:position:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/Cell/AABubbleVoiceCell.swift"
-            timestampString = "475207319.225536"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "289"
-            endingLineNumber = "289"
-            landmarkName = "mediaDidTap()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/AAConversationContentController.swift"
-            timestampString = "475209592.165357"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "376"
-            endingLineNumber = "376"
-            landmarkName = "playVoiceFromPath(_:fileId:position:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/Cell/AABubbleVoiceCell.swift"
-            timestampString = "475208560.106778"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "312"
-            endingLineNumber = "312"
-            landmarkName = "mediaDidTap()"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ActorSDK.AABubbleVoiceCell.mediaDidTap (ActorSDK.AABubbleVoiceCell)() -&gt; ()"
-                  moduleName = "ActorSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rikinzan/Documents/ezingsoft/dev2/actor-platform/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Content/Conversation/Cell/AABubbleVoiceCell.swift"
-                  timestampString = "475227490.52174"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "312"
-                  endingLineNumber = "312"
-                  offsetFromSymbolStart = "1120">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "ActorSDK.AABubbleVoiceCell.(mediaDidTap (ActorSDK.AABubbleVoiceCell) -&gt; () -&gt; ()).(closure #3)"
-                  moduleName = "ActorSDK"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/rikinzan/Documents/ezingsoft/dev2/actor-platform/actor-sdk/sdk-core-ios/ActorSDK/Sources/Controllers/Content/Conversation/Cell/AABubbleVoiceCell.swift"
-                  timestampString = "475227490.522082"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "312"
-                  endingLineNumber = "312"
-                  offsetFromSymbolStart = "192">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/AAConversationContentController.swift"
-            timestampString = "475236033.949966"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "389"
-            endingLineNumber = "389"
-            landmarkName = "playVoiceFromPath(_:fileId:position:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/Cell/AABubbleVoiceCell.swift"
-            timestampString = "475245959.650238"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "291"
-            endingLineNumber = "291"
-            landmarkName = "mediaDidTap()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/Cell/AABubbleVoiceCell.swift"
-            timestampString = "475245964.062463"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "325"
-            endingLineNumber = "325"
-            landmarkName = "mediaDidTap()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ActorSDK/Sources/Controllers/Content/Conversation/Cell/AABubbleVoiceCell.swift"
-            timestampString = "475246032.228544"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "305"
-            endingLineNumber = "305"
-            landmarkName = "mediaDidTap()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Pods/NYTPhotoViewer/Pod/Classes/ios/NYTPhotosViewController.m"
-            timestampString = "475258825.841302"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "280"
-            endingLineNumber = "280"
-            landmarkName = "-didSingleTapWithGestureRecognizer:"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "layoutSubviews()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
